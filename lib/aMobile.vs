@@ -69,6 +69,10 @@
 		const MAX_RECYCLED_CONTROLLERS = 10;
 		const MAX_LAYER = 1999998;
 
+		const clamp = (pVal, pMin, pMax) => {
+			return Math.max(pMin, Math.min(pVal, pMax));
+		}
+		
 		const toDegrees = (pAngle) => {
 			return pAngle * (180 / Math.PI);
 		}
@@ -347,8 +351,6 @@
 					// static: spawns at the touch position, cannot move from that location, just updates the joystick and will clamp at its limit
 					// stationary: cannot move from it's position at all, will just update the joystick and clamp it at its limit, can be pressed from anywhere on screen.
 
-					pX = Math.floor((pX - mainM.xBodyPos)) / mainM.scaleWidth; // find a better way to calcuate this value instead of relying on the engine's variable
-					pY = Math.floor((pY - mainM.yBodyPos)) / mainM.scaleHeight; // find a better way to calcuate this value instead of relying on the engine's variable
 					const touchPos = { 'x': pX - this.#joystick.halfSize, 'y': pY - this.#joystick.halfSize };
 					// start position is always the center of the joyring
 					let startPos;
@@ -834,10 +836,14 @@
 			const touches = pEvent.changedTouches;
 
 			for (let i = 0; i < touches.length; i++) {
-				const x = touches[i].clientX;
-				const y = touches[i].clientY;
-				const touchedDiob = getDiobUnderFinger(x, y);
+				const x = Math.floor((touches[i].clientX - mainM.xBodyPos)) / mainM.scaleWidth; // find a better way to calcuate this value instead of relying on the engine's variable
+				const y = Math.floor((touches[i].clientY - mainM.yBodyPos)) / mainM.scaleHeight; // find a better way to calcuate this value instead of relying on the engine's variable
+				const touchX = touches[i].clientX;
+				const touchY = touches[i].clientY;
+				const touchedDiob = getDiobUnderFinger(touchX, touchY);
 				const fingerID = touches[i].identifier;
+				let spriteRelativeX;
+				let spriteRelativeY;
 				
 				// console.log(fingerID, 'start');
 				// 	If you haven't touched a diob, but instead just a space on a screen check if there are any zoned controllers
@@ -845,8 +851,8 @@
 					handleZoneTouch(x, y, fingerID);
 				}
 
-				if (VS.Client.onTapStart) {
-					VS.Client.onTapStart(touchedDiob, x, y, fingerID);
+				if (VS.Client.onTapStart && typeof(VS.Client.onTapStart) === 'function') {
+					VS.Client.onTapStart(touchedDiob, clamp(touchX, 0, aMobile.windowSize.width), clamp(touchY, 0, aMobile.windowSize.height), fingerID);
 				}
 				if (touchedDiob) {
 					if (touchedDiob.trackedTouches === undefined) {
@@ -855,17 +861,15 @@
 					if (touchedDiob._slidOff === undefined) {
 						touchedDiob._slidOff = false;
 					}
-					if (touchedDiob.onTapStart) {
+					if (touchedDiob.onTapStart && typeof(touchedDiob.onTapStart) === 'function') {
 						// if you are already touching something, you need `touchOpacity` set to 2 to use `multitouch`
-						let spriteRelativeX;
-						let spriteRelativeY;
 						if (touchedDiob.baseType === 'Interface') {
-							spriteRelativeX = x - touchedDiob.xPos;
-							spriteRelativeY = y - touchedDiob.yPos;
+							spriteRelativeX = clamp(touchX - touchedDiob.xPos, 0, touchedDiob.width);
+							spriteRelativeY = clamp(touchY - touchedDiob.yPos, 0, touchedDiob.height);
 						} else {
-							VS.Client.getPosFromScreen(x, y, aMobile.mapPositionObject);
-							spriteRelativeX = aMobile.mapPositionObject.x - touchedDiob.xPos;
-							spriteRelativeY = aMobile.mapPositionObject.y - touchedDiob.yPos;
+							VS.Client.getPosFromScreen(touchX, touchY, aMobile.mapPositionObject);
+							spriteRelativeX = clamp(aMobile.mapPositionObject.x - touchedDiob.xPos, 0, touchedDiob.width);
+							spriteRelativeY = clamp(aMobile.mapPositionObject.y - touchedDiob.yPos, 0, touchedDiob.height);
 						}
 						touchedDiob.onTapStart(VS.Client, spriteRelativeX, spriteRelativeY, fingerID);
 					}
@@ -897,29 +901,31 @@
 			const touches = pEvent.changedTouches;
 
 			for (let i = 0; i < touches.length; i++) {
-				const x = touches[i].clientX;
-				const y = touches[i].clientY;
-				const touchedDiob = getDiobUnderFinger(x, y);
+				const x = Math.floor((touches[i].clientX - mainM.xBodyPos)) / mainM.scaleWidth; // find a better way to calcuate this value instead of relying on the engine's variable
+				const y = Math.floor((touches[i].clientY - mainM.yBodyPos)) / mainM.scaleHeight; // find a better way to calcuate this value instead of relying on the engine's variable
+				const touchX = touches[i].clientX;
+				const touchY = touches[i].clientY;
+				const touchedDiob = getDiobUnderFinger(touchX, touchY);
 				const fingerID = touches[i].identifier;
+				let spriteRelativeX;
+				let spriteRelativeY;
 
 				// console.log(fingerID, 'end');
 				handleZoneRelease(fingerID);
 				
-				if (VS.Client.onTapEnd) {
-					VS.Client.onTapEnd(touchedDiob, x, y, touches[i]);
+				if (VS.Client.onTapEnd && typeof(VS.Client.onTapEnd) === 'function') {
+					VS.Client.onTapEnd(touchedDiob, clamp(touchX, 0, aMobile.windowSize.width), clamp(touchY, 0, aMobile.windowSize.height), touches[i].identifier);
 				}
 			
 				if (touchedDiob) {
-					if (touchedDiob.onTapEnd) {
-						let spriteRelativeX;
-						let spriteRelativeY;
+					if (touchedDiob.onTapEnd && typeof(touchedDiob.onTapEnd) === 'function') {
 						if (touchedDiob.baseType === 'Interface') {
-							spriteRelativeX = x - touchedDiob.xPos;
-							spriteRelativeY = y - touchedDiob.yPos;
+							spriteRelativeX = clamp(touchX - touchedDiob.xPos, 0, touchedDiob.width);
+							spriteRelativeY = clamp(touchY - touchedDiob.yPos, 0, touchedDiob.height);
 						} else {
-							VS.Client.getPosFromScreen(x, y, aMobile.mapPositionObject);
-							spriteRelativeX = aMobile.mapPositionObject.x - touchedDiob.xPos;
-							spriteRelativeY = aMobile.mapPositionObject.y - touchedDiob.yPos;
+							VS.Client.getPosFromScreen(touchX, touchY, aMobile.mapPositionObject);
+							spriteRelativeX = clamp(aMobile.mapPositionObject.x - touchedDiob.xPos, 0, touchedDiob.width);
+							spriteRelativeY = clamp(aMobile.mapPositionObject.y - touchedDiob.yPos, 0, touchedDiob.height);
 						}
 						if (touchedDiob.touchOpacity === MULTI_TOUCH) {
 							touchedDiob.onTapEnd(VS.Client, spriteRelativeX, spriteRelativeY, fingerID);
@@ -941,8 +947,16 @@
 						if (aMobile.touchedDiobs[j].trackedTouches.length) {
 							if (aMobile.touchedDiobs[j].trackedTouches.includes(fingerID)) {
 								aMobile.touchedDiobs[j].trackedTouches.splice(aMobile.touchedDiobs[j].trackedTouches.indexOf(fingerID), 1);
-								if (aMobile.touchedDiobs[j].onTapStop) {
-									aMobile.touchedDiobs[j].onTapStop(VS.Client, x, y, fingerID); // you tapped this diob, and finally released it (no matter if it was over the diob or not)
+								if (aMobile.touchedDiobs[j].onTapStop && typeof(aMobile.touchedDiobs[j].onTapStop) === 'function') {
+									if (aMobile.touchedDiobs[j].baseType === 'Interface') {
+										spriteRelativeX = clamp(touchX - aMobile.touchedDiobs[j].xPos, 0, aMobile.touchedDiobs[j].width);
+										spriteRelativeY = clamp(touchY - aMobile.touchedDiobs[j].yPos, 0, aMobile.touchedDiobs[j].height);
+									} else {
+										VS.Client.getPosFromScreen(touchX, touchY, aMobile.mapPositionObject);
+										spriteRelativeX = clamp(aMobile.mapPositionObject.x - aMobile.touchedDiobs[j].xPos, 0, aMobile.touchedDiobs[j].width);
+										spriteRelativeY = clamp(aMobile.mapPositionObject.y - aMobile.touchedDiobs[j].yPos, 0, aMobile.touchedDiobs[j].height);
+									}
+									aMobile.touchedDiobs[j].onTapStop(VS.Client, spriteRelativeX, spriteRelativeY, fingerID); // you tapped this diob, and finally released it (no matter if it was over the diob or not)
 								}
 								if (aMobile.touchedDiobs[j]._slidOff) {
 									aMobile.touchedDiobs[j]._slidOff = false;
@@ -979,28 +993,30 @@
 			const touches = pEvent.changedTouches;
 
 			for (let i = 0; i < touches.length; i++) {
-				const x = touches[i].clientX;
-				const y = touches[i].clientY;
-				const touchedDiob = getDiobUnderFinger(x, y);
+				const x = Math.floor((touches[i].clientX - mainM.xBodyPos)) / mainM.scaleWidth; // find a better way to calcuate this value instead of relying on the engine's variable
+				const y = Math.floor((touches[i].clientY - mainM.yBodyPos)) / mainM.scaleHeight; // find a better way to calcuate this value instead of relying on the engine's variable
+				const touchX = touches[i].clientX;
+				const touchY = touches[i].clientY;
+				const touchedDiob = getDiobUnderFinger(touchX, touchY);
 				const fingerID = touches[i].identifier;
+				let spriteRelativeX;
+				let spriteRelativeY;
 				
 				handleZoneMove(x, y, fingerID);
 
-				if (VS.Client.onTapMove) {
-					VS.Client.onTapMove(touchedDiob, x, y, fingerID);
+				if (VS.Client.onTapMove && typeof(VS.Client.onTapMove) === 'function') {
+					VS.Client.onTapMove(touchedDiob, clamp(touchX, 0, aMobile.windowSize.width), clamp(touchY, 0, aMobile.windowSize.height), fingerID);
 				}
 
 				if (touchedDiob) {
-					if (touchedDiob.onTapMove) {
-						let spriteRelativeX;
-						let spriteRelativeY;
+					if (touchedDiob.onTapMove && typeof(touchedDiob.onTapMove) === 'function') {
 						if (touchedDiob.baseType === 'Interface') {
-							spriteRelativeX = x - touchedDiob.xPos;
-							spriteRelativeY = y - touchedDiob.yPos;
+							spriteRelativeX = clamp(touchX - touchedDiob.xPos, 0, touchedDiob.width);
+							spriteRelativeY = clamp(touchY - touchedDiob.yPos, 0, touchedDiob.height);
 						} else {
-							VS.Client.getPosFromScreen(x, y, aMobile.mapPositionObject);
-							spriteRelativeX = aMobile.mapPositionObject.x - touchedDiob.xPos;
-							spriteRelativeY = aMobile.mapPositionObject.y - touchedDiob.yPos;
+							VS.Client.getPosFromScreen(touchX, touchY, aMobile.mapPositionObject);
+							spriteRelativeX = clamp(aMobile.mapPositionObject.x - touchedDiob.xPos, 0, touchedDiob.width);
+							spriteRelativeY = clamp(aMobile.mapPositionObject.y - touchedDiob.yPos, 0, touchedDiob.height);
 						}
 						if (touchedDiob.touchOpacity === MULTI_TOUCH) {
 							touchedDiob.onTapMove(VS.Client, spriteRelativeX, spriteRelativeY, fingerID);
@@ -1016,18 +1032,26 @@
 					}
 				}
 				
-				for (let d of aMobile.touchedDiobs) {
-					if (d.trackedTouches.includes(fingerID)) {
-						if (d !== touchedDiob) {
-							if (!d._slidOff) {
-								if (d.onTapSlideOff) {
-									d._slidOff = true;
-									d.onTapSlideOff(VS.Client, x, y, fingerID);
+				for (const diob of aMobile.touchedDiobs) {
+					if (diob.trackedTouches.includes(fingerID)) {
+						if (diob !== touchedDiob) {
+							if (!diob._slidOff) {
+								if (diob.onTapSlideOff && typeof(diob.onTapSlideOff) === 'function') {
+									diob._slidOff = true;
+									if (diob.baseType === 'Interface') {
+										spriteRelativeX = clamp(touchX - diob.xPos, 0, diob.width);
+										spriteRelativeY = clamp(touchY - diob.yPos, 0, diob.height);
+									} else {
+										VS.Client.getPosFromScreen(touchX, touchY, aMobile.mapPositionObject);
+										spriteRelativeX = clamp(aMobile.mapPositionObject.x - diob.xPos, 0, diob.width);
+										spriteRelativeY = clamp(aMobile.mapPositionObject.y - diob.yPos, 0, diob.height);
+									}
+									diob.onTapSlideOff(VS.Client, spriteRelativeX, spriteRelativeY, fingerID);
 								}
 							}
 						}
-						if (d.aMobileController) {
-							const joyring = d;
+						if (diob.aMobileController) {
+							const joyring = diob;
 							joyring.controller.update(x, y);
 						}
 					}
