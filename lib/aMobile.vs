@@ -55,6 +55,7 @@
 		}
 
 		// https://github.com/apache/cordova-plugin-vibration#readme
+		// https://developer.mozilla.org/en-US/docs/Web/API/Vibration_API
 		aMobile.vibrate = function(pDuration) {
 			if (typeof(pDuration) === 'undefined') {
 				pDuration = 500;
