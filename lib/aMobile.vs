@@ -336,11 +336,11 @@
 				}
 
 				if (pOptions.position.constructor === Object) {
-					if (!Number.isInteger(pOptions.position?.x)) {
+					if (!Number.isInteger(pOptions.position.x)) {
 						pOptions.position.x = 100;
 						// warning
 					}
-					if (!Number.isInteger(pOptions.position?.y)) {
+					if (!Number.isInteger(pOptions.position.y)) {
 						pOptions.position.y = 100;
 						// warning
 					}
@@ -818,10 +818,10 @@
 				const rightZoneController = aMobile.zonedControllers['right'];
 				const leftZoneController = aMobile.zonedControllers['left'];
 
-				if (rightZoneController?.controllingFinger === pFingerID && rightZoneController?.activeInZone) {
+				if (rightZoneController && rightZoneController.controllingFinger === pFingerID && rightZoneController.activeInZone) {
 					// console.log('right zone controller released');
 					rightZoneController.release();
-				} else if (leftZoneController?.controllingFinger === pFingerID && leftZoneController?.activeInZone) {
+				} else if (leftZoneController && leftZoneController.controllingFinger === pFingerID && leftZoneController.activeInZone) {
 					// console.log('left zone controller released');
 					leftZoneController.release();
 				}
@@ -844,9 +844,9 @@
 				const rightZoneController = aMobile.zonedControllers['right'];
 				const leftZoneController = aMobile.zonedControllers['left'];
 
-				if (rightZoneController?.controllingFinger === pFingerID && rightZoneController?.activeInZone) {
+				if (rightZoneController && rightZoneController.controllingFinger === pFingerID && rightZoneController.activeInZone) {
 					rightZoneController.update(pX, pY);
-				} else if (leftZoneController?.controllingFinger === pFingerID && leftZoneController?.activeInZone) {
+				} else if (leftZoneController && leftZoneController.controllingFinger === pFingerID && leftZoneController.activeInZone) {
 					leftZoneController.update(pX, pY);
 				}
 			} else {
