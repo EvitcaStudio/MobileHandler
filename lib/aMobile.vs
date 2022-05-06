@@ -67,6 +67,12 @@
 			}
 		}
 
+		aMobile.getDeviceRAM = function() {
+			if (typeof(navigator) !== 'undefined') {
+				return navigator.deviceMemory;
+			}
+		}
+
 		if (!VS.Client._aMobileOnWindowResizeSet) {
 			VS.Client._aMobileOnWindowResize = VS.Client.onWindowResize;
 			VS.Client._aMobileOnWindowResizeSet = true;
