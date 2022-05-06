@@ -139,86 +139,88 @@
 		};
 
 		class Controller {
+/*
+			// commented out because older devices *cough* iOS devices that are under 14.5 do not support this and prevent the game from loading
 			#joyring;
 			#joystick;
 			#options;
 			#lockedStatus;
+*/
+			setup() { // #
+				this.joyring.atlasName = this.options.atlasName;
+				this.joyring.iconName = this.options.joyringIconName;
+				this.joyring.touchOpacity = MULTI_TOUCH;
+				this.joyring.interfaceType = 'default';
+				this.joyring.color = { 'tint': 0xFFFFFF };
+				this.joyring.scale = 1;
+				this.joyring.anchor = { 'x': 0.5, 'y': 0.5 };
+				this.joyring.plane = this.options.plane;
+				this.joyring.layer = this.options.layer;
+				this.joyring.width = this.options.size;
+				this.joyring.height = this.options.size;
+				this.joyring.halfSize = this.joyring.width / 2;
+				this.joyring.child = this.joystick;
+				this.joyring.aMobileController = true;
+				this.joyring.originalPos = { 'x': this.options.position.x, 'y': this.options.position.y };
+				this.joyring.onNew = () => {};
 
-			#setup() {
-				this.#joyring.atlasName = this.#options.atlasName;
-				this.#joyring.iconName = this.#options.joyringIconName;
-				this.#joyring.touchOpacity = MULTI_TOUCH;
-				this.#joyring.interfaceType = 'default';
-				this.#joyring.color = { 'tint': 0xFFFFFF };
-				this.#joyring.scale = 1;
-				this.#joyring.anchor = { 'x': 0.5, 'y': 0.5 };
-				this.#joyring.plane = this.#options.plane;
-				this.#joyring.layer = this.#options.layer;
-				this.#joyring.width = this.#options.size;
-				this.#joyring.height = this.#options.size;
-				this.#joyring.halfSize = this.#joyring.width / 2;
-				this.#joyring.child = this.#joystick;
-				this.#joyring.aMobileController = true;
-				this.#joyring.originalPos = { 'x': this.#options.position.x, 'y': this.#options.position.y };
-				this.#joyring.onNew = () => {};
+				this.joystick.atlasName = this.options.atlasName;
+				this.joystick.iconName = this.options.joystickIconName;
+				this.joystick.touchOpacity = NO_TOUCH;
+				this.joystick.interfaceType = 'default';
+				this.joystick.color = { 'tint': 0xFFFFFF };
+				this.joystick.scale = 1;
+				this.joystick.anchor = { 'x': 0.5, 'y': 0.5 };
+				this.joystick.startPos = { 'x': 0, 'y': 0 };
+				this.joystick.width = this.options.size / 2;
+				this.joystick.height = this.options.size / 2;
+				this.joystick.plane = this.options.plane;
+				this.joystick.layer = this.options.layer + 1; // the inner ring must be layered above the outer ring
+				this.joystick.anglePoint = 0;
+				this.joystick.direction = 'none';
+				this.joystick.halfSize = this.joystick.width / 2;
+				this.joystick.parent = this.joyring;
+				this.joystick.originalPos = { 'x': this.joyring.originalPos.x + this.joystick.halfSize, 'y': this.joyring.originalPos.y + this.joystick.halfSize };
+				this.joystick.onNew = () => {};
 
-				this.#joystick.atlasName = this.#options.atlasName;
-				this.#joystick.iconName = this.#options.joystickIconName;
-				this.#joystick.touchOpacity = NO_TOUCH;
-				this.#joystick.interfaceType = 'default';
-				this.#joystick.color = { 'tint': 0xFFFFFF };
-				this.#joystick.scale = 1;
-				this.#joystick.anchor = { 'x': 0.5, 'y': 0.5 };
-				this.#joystick.startPos = { 'x': 0, 'y': 0 };
-				this.#joystick.width = this.#options.size / 2;
-				this.#joystick.height = this.#options.size / 2;
-				this.#joystick.plane = this.#options.plane;
-				this.#joystick.layer = this.#options.layer + 1; // the inner ring must be layered above the outer ring
-				this.#joystick.anglePoint = 0;
-				this.#joystick.direction = 'none';
-				this.#joystick.halfSize = this.#joystick.width / 2;
-				this.#joystick.parent = this.#joyring;
-				this.#joystick.originalPos = { 'x': this.#joyring.originalPos.x + this.#joystick.halfSize, 'y': this.#joyring.originalPos.y + this.#joystick.halfSize };
-				this.#joystick.onNew = () => {};
+				this.joyring.controller = this;
+				this.joystick.controller = this;
 
-				this.#joyring.controller = this;
-				this.#joystick.controller = this;
-
-				this.onTapStart = this.#options.callback.onTapStart;
-				this.onRelease = this.#options.callback.onRelease;
-				this.onMove = this.#options.callback.onMove;
-				this.#lockedStatus = this.#options.lockedStatus;
-				this.lock(this.#lockedStatus);
-				VS.Client.addInterfaceElement(this.#joyring, 'aMobile_joystick_interface', this.#joyring.id);
-				VS.Client.addInterfaceElement(this.#joystick, 'aMobile_joystick_interface', this.#joystick.id);
+				this.onTapStart = this.options.callback.onTapStart;
+				this.onRelease = this.options.callback.onRelease;
+				this.onMove = this.options.callback.onMove;
+				this.lockedStatus = this.options.lockedStatus;
+				this.lock(this.lockedStatus);
+				VS.Client.addInterfaceElement(this.joyring, 'aMobile_joystick_interface', this.joyring.id);
+				VS.Client.addInterfaceElement(this.joystick, 'aMobile_joystick_interface', this.joystick.id);
 				aMobile.activeControllers.push(this);
 				this.show();
 			}
 
-			#handleTransition(pFade) {
-				if (this.#options.inactiveAlpha || this.#options.inactiveAlpha === 0) {
-					this.#joyring.setTransition();
-					this.#joystick.setTransition();
+			handleTransition(pFade) { // #
+				if (this.options.inactiveAlpha || this.options.inactiveAlpha === 0) {
+					this.joyring.setTransition();
+					this.joystick.setTransition();
 					if (pFade) {
-						this.#joyring.setTransition({ 'alpha': this.#options.inactiveAlpha }, -1, this.#options.transitionTime);
-						this.#joystick.setTransition({ 'alpha': this.#options.inactiveAlpha }, -1, this.#options.transitionTime);
+						this.joyring.setTransition({ 'alpha': this.options.inactiveAlpha }, -1, this.options.transitionTime);
+						this.joystick.setTransition({ 'alpha': this.options.inactiveAlpha }, -1, this.options.transitionTime);
 					} else {
-						this.#joyring.setTransition({ 'alpha': 1 }, -1, this.#options.transitionTime);
-						this.#joystick.setTransition({ 'alpha': 1 }, -1, this.#options.transitionTime);					
+						this.joyring.setTransition({ 'alpha': 1 }, -1, this.options.transitionTime);
+						this.joystick.setTransition({ 'alpha': 1 }, -1, this.options.transitionTime);					
 					}
 				}
 			}
 
-			#reset(pSoft) {
-				const angle = this.#joystick.anglePoint;
-				const direction = this.#joystick.direction;
-				this.#joystick.alpha = this.#options.inactiveAlpha;
-				this.#joystick.startPos.x = this.#joystick.startPos.y = 0;
-				this.#joystick.direction = 'none';
-				this.#joystick.anglePoint = 0;
-				this.#joyring.trackedTouches = [];
-				this.#joyring.layer = this.#options.layer;
-				this.#joystick.layer = this.#options.layer + 10;
+			reset(pSoft) { // #
+				const angle = this.joystick.anglePoint;
+				const direction = this.joystick.direction;
+				this.joystick.alpha = this.options.inactiveAlpha;
+				this.joystick.startPos.x = this.joystick.startPos.y = 0;
+				this.joystick.direction = 'none';
+				this.joystick.anglePoint = 0;
+				this.joyring.trackedTouches = [];
+				this.joyring.layer = this.options.layer;
+				this.joystick.layer = this.options.layer + 10;
 				this.activeInZone = false;
 				this.controllingFinger = null;
 
@@ -242,20 +244,20 @@
 					}
 					this.zone = null;
 					this.type = 'stationary';
-					this.#lockedStatus = null;
+					this.lockedStatus = null;
 					this.options = {};
-					if (aMobile.touchedDiobs.includes(this.#joyring)) {
-						aMobile.touchedDiobs.splice(aMobile.touchedDiobs.indexOf(this.#joyring), 1);
+					if (aMobile.touchedDiobs.includes(this.joyring)) {
+						aMobile.touchedDiobs.splice(aMobile.touchedDiobs.indexOf(this.joyring), 1);
 					}
 				}
 			}
 
 			build(pOptions = { 'type': 'stationary', 'size': 100, 'position': { 'x': 100, 'y': 100 }, 'lockedStatus': null, 'zone': null, 'inactiveAlpha': 0.5, 'transitionTime': 500, 'scale': 1, 'plane': 1, 'layer': 1, 'atlasName': '', 'joystickIconName': '', 'joyringIconName': '', 'callback': { 'onTapStart': null, 'onRelease': null, 'onMove': null } }) {
-				if (!this.#joyring && !this.#joystick) {
+				if (!this.joyring && !this.joystick) {
 					const joyring = VS.newDiob('Interface');
 					const joystick = VS.newDiob('Interface');
-					this.#joyring = joyring;
-					this.#joystick = joystick;
+					this.joyring = joyring;
+					this.joystick = joystick;
 				}
 				// pOptions.size is the size of the joyring, the inner ring will be 50% of this size.
 				// pOptions.position is the position for the joyring, the inner ring will be positioned inside.
@@ -348,33 +350,37 @@
 					pOptions.position = { 'x': 100, 'y': 100 };
 					// warning
 				}
-				this.#options = pOptions;
-				this.#setup();
+				this.options = pOptions;
+				this.setup();
 			}
 
 			get type() {
-				return this.#options.type;
+				return this.options.type;
 			}
 
 			set type(pNewType) {
 				if (pNewType === 'stationary') {
-					this.#options.type = pNewType;
+					this.options.type = pNewType;
 				}
 			}
 
 			constructor(pOptions) {
+				this.joyring = null;
+				this.joystick = null;
+				this.options = null;
+				this.lockedStatus = null;
 				this.build(pOptions);
 			}
 
 			update(pX, pY, pTouchStart) {
-				if (this.#lockedStatus === 'both') return;
+				if (this.lockedStatus === 'both') return;
 				if (pTouchStart) {
-					this.#handleTransition();
+					this.handleTransition();
 					if (this.active) {
-						this.#joyring.trackedTouches = [];
+						this.joyring.trackedTouches = [];
 					}
-					this.#joyring.layer = MAX_LAYER;
-					this.#joystick.layer = MAX_LAYER + 10;
+					this.joyring.layer = MAX_LAYER;
+					this.joystick.layer = MAX_LAYER + 10;
 					this.active = true;
 				}
 				if (this.active) {
@@ -382,7 +388,7 @@
 					// static: spawns at the touch position, cannot move from that location, just updates the joystick and will clamp at its limit
 					// stationary: cannot move from it's position at all, will just update the joystick and clamp it at its limit, can be pressed from anywhere on screen.
 
-					const touchPos = { 'x': pX - this.#joystick.halfSize, 'y': pY - this.#joystick.halfSize };
+					const touchPos = { 'x': pX - this.joystick.halfSize, 'y': pY - this.joystick.halfSize };
 					// start position is always the center of the joyring
 					let startPos;
 					// distance is how far away the joystick is from the start position
@@ -394,94 +400,94 @@
 					// clampedPos is the position that was clamped when the joystick tried to go past it's clampedDistance
 					let clampedPos;
 
-					if (this.#options.type === 'stationary') {
+					if (this.options.type === 'stationary') {
 						// this joystick is stationary therefore the start position is it's default position
-						startPos = this.#joystick.originalPos;
+						startPos = this.joystick.originalPos;
 						// if a certain axis is locked, clamp that position to it's start position
-						if (this.#lockedStatus === 'horizontal') {
+						if (this.lockedStatus === 'horizontal') {
 							touchPos.y = startPos.y;
-						} else if (this.#lockedStatus === 'vertical') {
+						} else if (this.lockedStatus === 'vertical') {
 							touchPos.x = startPos.x;
 						}
 						distance = getDistance(startPos, touchPos);
 						angle = getAngle(startPos, touchPos);
-						clampedDistance = Math.min(distance, this.#joyring.halfSize);
+						clampedDistance = Math.min(distance, this.joyring.halfSize);
 						clampedPos = findPos(startPos, clampedDistance, angle);
 						// set the position to the clamped position so that it is locked to it's clampedPos
-						this.#joystick.setPos(clampedPos.x, clampedPos.y);
-					} else if (this.#options.type === 'traversal' || this.#options.type === 'static') {
+						this.joystick.setPos(clampedPos.x, clampedPos.y);
+					} else if (this.options.type === 'traversal' || this.options.type === 'static') {
 						// Position the joystick centered to the position of where the screen was touched if this is the first time touching the joystick
 						if (pTouchStart) {
-							this.#joystick.startPos = touchPos;
-							this.#joyring.setPos(touchPos.x - this.#joystick.halfSize, touchPos.y - this.#joystick.halfSize);
-							this.#joystick.setPos(touchPos.x, touchPos.y);
+							this.joystick.startPos = touchPos;
+							this.joyring.setPos(touchPos.x - this.joystick.halfSize, touchPos.y - this.joystick.halfSize);
+							this.joystick.setPos(touchPos.x, touchPos.y);
 							return;
 						}
 
-						if (this.#options.type === 'traversal') {
+						if (this.options.type === 'traversal') {
 							// the start position for traversal is wherever you pressed on the screen originally
 							// the start position was set in the `pTouchStart` portion
-							distance = getDistance(this.#joystick.startPos, touchPos);
-							angle = getAngle(this.#joystick.startPos, touchPos);
-							clampedDistance = Math.min(distance, this.#joyring.halfSize);
-							clampedPos = findPos(this.#joystick.startPos, clampedDistance, angle);
+							distance = getDistance(this.joystick.startPos, touchPos);
+							angle = getAngle(this.joystick.startPos, touchPos);
+							clampedDistance = Math.min(distance, this.joyring.halfSize);
+							clampedPos = findPos(this.joystick.startPos, clampedDistance, angle);
 							// set the position to the position touched
-							this.#joystick.setPos(touchPos.x, touchPos.y);
+							this.joystick.setPos(touchPos.x, touchPos.y);
 							// update the parent to follow the child after it is placed
-							const parentAngle = getAngle(touchPos, this.#joystick.startPos);
+							const parentAngle = getAngle(touchPos, this.joystick.startPos);
 							const parentClampedPos = findPos(touchPos, clampedDistance, parentAngle);
-							this.#joyring.setPos(parentClampedPos.x - this.#joystick.halfSize, parentClampedPos.y - this.#joystick.halfSize);
+							this.joyring.setPos(parentClampedPos.x - this.joystick.halfSize, parentClampedPos.y - this.joystick.halfSize);
 
 							// if the distance is greater that the clamped position then we need to update the start position of the joystick
 							if (distance > clampedDistance) {
-								this.#joystick.startPos.x = this.#joyring.xPos + this.#joystick.halfSize;
-								this.#joystick.startPos.y = this.#joyring.yPos + this.#joystick.halfSize;
+								this.joystick.startPos.x = this.joyring.xPos + this.joystick.halfSize;
+								this.joystick.startPos.y = this.joyring.yPos + this.joystick.halfSize;
 							}
-						} else if (this.#options.type === 'static') {
+						} else if (this.options.type === 'static') {
 							// the start position for static is wherever you pressed on the screen originally
 							// the start position set in the `pTouchStart` portion
 						// if a certain axis is locked, clamp that position to it's start position
-							if (this.#lockedStatus === 'horizontal') {
-								touchPos.y = this.#joystick.startPos.y;
-							} else if (this.#lockedStatus === 'vertical') {
-								touchPos.x = this.#joystick.startPos.x;
+							if (this.lockedStatus === 'horizontal') {
+								touchPos.y = this.joystick.startPos.y;
+							} else if (this.lockedStatus === 'vertical') {
+								touchPos.x = this.joystick.startPos.x;
 							}
-							distance = getDistance(this.#joystick.startPos, touchPos);
-							angle = getAngle(this.#joystick.startPos, touchPos);
-							clampedDistance = Math.min(distance, this.#joyring.halfSize);
-							clampedPos = findPos(this.#joystick.startPos, clampedDistance, angle);
+							distance = getDistance(this.joystick.startPos, touchPos);
+							angle = getAngle(this.joystick.startPos, touchPos);
+							clampedDistance = Math.min(distance, this.joyring.halfSize);
+							clampedPos = findPos(this.joystick.startPos, clampedDistance, angle);
 							// set the position to the clamped position so that it is locked
-							this.#joystick.setPos(clampedPos.x, clampedPos.y);
+							this.joystick.setPos(clampedPos.x, clampedPos.y);
 						}
 					}
 
 					// set the angle point for reading (-1 is to convert it for use in an environment where up is down, and down is up)
-					this.#joystick.anglePoint = (toRadians(angle) - Math.PI) * -1;
+					this.joystick.anglePoint = (toRadians(angle) - Math.PI) * -1;
 					// set the direction for reading
-					this.#joystick.direction = Math.round(Math.abs(clampedDistance)) < (this.#joyring.halfSize / 8) ? 'none' : getDirection(Math.abs(angle - 180));
+					this.joystick.direction = Math.round(Math.abs(clampedDistance)) < (this.joyring.halfSize / 8) ? 'none' : getDirection(Math.abs(angle - 180));
 
 					if (this.onMove && typeof(this.onMove) === 'function') {
-						this.onMove(VS.Client, this.#joystick.anglePoint, this.#joystick.direction);
+						this.onMove(VS.Client, this.joystick.anglePoint, this.joystick.direction);
 					}
 				}
 			}
 
 			release() {
-				if (this.#lockedStatus === 'both') return;
-				this.#reset(true);
-				this.#joyring.setPos(this.#joyring.originalPos.x, this.#joyring.originalPos.y);
-				this.#joystick.setPos(this.#joystick.originalPos.x, this.#joystick.originalPos.y);
-				this.#handleTransition(true);
+				if (this.lockedStatus === 'both') return;
+				this.reset(true);
+				this.joyring.setPos(this.joyring.originalPos.x, this.joyring.originalPos.y);
+				this.joystick.setPos(this.joystick.originalPos.x, this.joystick.originalPos.y);
+				this.handleTransition(true);
 			}
 
 			lock(pDimension) {
 				if (typeof(pDimension) === 'string') {
 					if (pDimension.toLowerCase() === 'horizontal') {
-						this.#lockedStatus = 'horizontal';
+						this.lockedStatus = 'horizontal';
 					} else if (pDimension.toLowerCase() === 'vertical') {
-						this.#lockedStatus = 'vertical';
+						this.lockedStatus = 'vertical';
 					} else {
-						this.#lockedStatus = 'both';
+						this.lockedStatus = 'both';
 					}
 				}
 			}
@@ -489,25 +495,25 @@
 			unlock(pDimension) {
 				if (typeof(pDimension) === 'string') {
 					if (pDimension.toLowerCase() === 'horizontal') {
-						if (this.#lockedStatus === 'both') {
-							this.#lockedStatus = 'vertical';
+						if (this.lockedStatus === 'both') {
+							this.lockedStatus = 'vertical';
 						} else {
-							this.#lockedStatus = null;
+							this.lockedStatus = null;
 						}
 					} else if (pDimension.toLowerCase() === 'vertical') {
-						if (this.#lockedStatus === 'both') {
-							this.#lockedStatus = 'horizontal';
+						if (this.lockedStatus === 'both') {
+							this.lockedStatus = 'horizontal';
 						} else {
-							this.#lockedStatus = null;
+							this.lockedStatus = null;
 						}
 					} else {
-						this.#lockedStatus = null;
+						this.lockedStatus = null;
 					}
 				}
 			}
 
 			destroy() {
-				this.#reset();
+				this.reset();
 				if (aMobile.activeControllers.includes(this)) {
 					aMobile.activeControllers.splice(aMobile.activeControllers.indexOf(this), 1);
 				}
@@ -517,21 +523,21 @@
 			}
 
 			getComponents() {
-				return { 'joystick': this.#joystick, 'joyring': this.#joyring };
+				return { 'joystick': this.joystick, 'joyring': this.joyring };
 			}
 
 			hide() {
-				this.#joyring.hide();
-				this.#joystick.hide();
-				this.#reset(true);
+				this.joyring.hide();
+				this.joystick.hide();
+				this.reset(true);
 			}
 
 			show() {
-				this.#joyring.setPos(this.#joyring.originalPos.x, this.#joyring.originalPos.y);
-				this.#joystick.setPos(this.#joystick.originalPos.x, this.#joystick.originalPos.y);
-				this.#joyring.show();
-				this.#joystick.show();
-				this.#handleTransition(true);
+				this.joyring.setPos(this.joyring.originalPos.x, this.joyring.originalPos.y);
+				this.joystick.setPos(this.joystick.originalPos.x, this.joystick.originalPos.y);
+				this.joyring.show();
+				this.joystick.show();
+				this.handleTransition(true);
 			}
 		}
 
