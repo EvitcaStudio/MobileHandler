@@ -71,27 +71,20 @@
 			}
 		}
 
-		if (!VS.Client._aMobileOnWindowResizeSet) {
-			VS.Client._aMobileOnWindowResize = VS.Client.onWindowResize;
-			VS.Client._aMobileOnWindowResizeSet = true;
-			VS.Client.onWindowResize = function(pWidth, pHeight) {
-				aMobile.middlePosition = pWidth / 2;
-				aMobile.windowSize.width = pWidth;
-				aMobile.windowSize.height = pHeight;
-				for (const controller of aMobile.activeControllers) {
-					const components = controller.getComponents();
-					if (components.joyring.edgeLock) {
-						components.joyring.originalPos = { 'x': components.joyring.xPos, 'y': components.joyring.yPos };
-					}
-					if (components.joystick.edgeLock) {
-						components.joystick.originalPos = { 'x': components.joystick.xPos, 'y': components.joystick.yPos };
-					}
+		VS.global.aListener.addEventListener(VS.Client, 'onWindowResize', function(pWidth, pHeight) {
+			aMobile.middlePosition = pWidth / 2;
+			aMobile.windowSize.width = pWidth;
+			aMobile.windowSize.height = pHeight;
+			for (const controller of aMobile.activeControllers) {
+				const components = controller.getComponents();
+				if (components.joyring.edgeLock) {
+					components.joyring.originalPos = { 'x': components.joyring.xPos, 'y': components.joyring.yPos };
 				}
-				if (this._aMobileOnWindowResize) {
-					this._aMobileOnWindowResize.apply(this, arguments);
+				if (components.joystick.edgeLock) {
+					components.joystick.originalPos = { 'x': components.joystick.xPos, 'y': components.joystick.yPos };
 				}
 			}
-		}
+		});
 
 		const MULTI_TOUCH = 2;
 		const NO_TOUCH = 0;
