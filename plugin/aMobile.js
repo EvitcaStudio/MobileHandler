@@ -1,7 +1,7 @@
 (() => {
 	// Client library
 	const engineWaitId = setInterval(() => {
-		if (VS.Client) {
+		if (VYLO.Client) {
 			clearInterval(engineWaitId);
 			buildMobile();
 		}
@@ -22,23 +22,23 @@
 		// an array that holds the current zones taken, 'left' or 'right'.
 		aMobile.zonesTaken = [];
 		// an object containing the screen size of the game.
-		aMobile.middlePosition = VS.World.getGameSize().width / 2;
+		aMobile.middlePosition = VYLO.World.getGameSize().width / 2;
 		// an object holding the current game size
-		aMobile.windowSize = VS.World.getGameSize();
+		aMobile.windowSize = VYLO.World.getGameSize();
 
-		VS.World.global.aMobile = aMobile;
-		VS.Client.aMobile = aMobile;
+		VYLO.global.aMobile = aMobile;
+		VYLO.Client.aMobile = aMobile;
 
-		VS.Client.createInterface('aMobile_joystick_interface');
-		VS.Client.showInterface('aMobile_joystick_interface');
+		VYLO.Client.createInterface('aMobile_joystick_interface');
+		VYLO.Client.showInterface('aMobile_joystick_interface');
 
 		aMobile.isMobile = false;
 		if(/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|ipad|iris|kindle|Android|Silk|lge |maemo|midp|mmp|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows (ce|phone)|xda|xiino/i.test(navigator.userAgent) || /1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(navigator.userAgent.substr(0,4))) {
 			aMobile.isMobile = true;
 		}
 
-		VS.Client.isMobile = aMobile.isMobile;
-		VS.Client.___EVITCA_aMobile = true;
+		VYLO.Client.isMobile = aMobile.isMobile;
+		VYLO.Client.___EVITCA_aMobile = true;
 
 		aMobile.getDevice = function() {
 			if ((navigator.userAgent.indexOf('iPhone') > 0 && navigator.userAgent.indexOf('iPad') == -1) || navigator.userAgent.indexOf('iPod') > 0 ) {
@@ -71,7 +71,7 @@
 			}
 		}
 
-		VS.global.aListener.addEventListener(VS.Client, 'onWindowResize', function(pWidth, pHeight) {
+		AListener.addEventListener(VYLO.Client, 'onWindowResize', function(pWidth, pHeight) {
 			aMobile.middlePosition = pWidth / 2;
 			aMobile.windowSize.width = pWidth;
 			aMobile.windowSize.height = pHeight;
@@ -182,8 +182,8 @@
 				this.onMove = this.options.callback.onMove;
 				this.lockedStatus = this.options.lockedStatus;
 				this.lock(this.lockedStatus);
-				VS.Client.addInterfaceElement(this.joyring, 'aMobile_joystick_interface', this.joyring.id);
-				VS.Client.addInterfaceElement(this.joystick, 'aMobile_joystick_interface', this.joystick.id);
+				VYLO.Client.addInterfaceElement(this.joyring, 'aMobile_joystick_interface', this.joyring.id);
+				VYLO.Client.addInterfaceElement(this.joystick, 'aMobile_joystick_interface', this.joystick.id);
 				aMobile.activeControllers.push(this);
 				this.show();
 			}
@@ -218,7 +218,7 @@
 				if (this.active) {
 					this.active = false;
 					if (this.onRelease && typeof(this.onRelease) === 'function') {
-						this.onRelease(VS.Client, angle, direction);
+						this.onRelease(VYLO.Client, angle, direction);
 					}
 				}
 				if (!pSoft) {
@@ -245,8 +245,8 @@
 
 			build(pOptions = { 'type': 'stationary', 'size': 100, 'position': { 'x': 100, 'y': 100 }, 'lockedStatus': null, 'zone': null, 'inactiveAlpha': 0.5, 'transitionTime': 500, 'scale': 1, 'plane': 1, 'layer': 1, 'atlasName': '', 'joystickIconName': '', 'joyringIconName': '', 'callback': { 'onTapStart': null, 'onRelease': null, 'onMove': null } }) {
 				if (!this.joyring && !this.joystick) {
-					const joyring = VS.newDiob('Interface');
-					const joystick = VS.newDiob('Interface');
+					const joyring = VYLO.newDiob('Interface');
+					const joystick = VYLO.newDiob('Interface');
 					this.joyring = joyring;
 					this.joystick = joystick;
 				}
@@ -458,7 +458,7 @@
 					this.joystick.direction = Math.round(Math.abs(clampedDistance)) < (this.joyring.halfSize / 8) ? 'none' : getDirection(Math.abs(angle - 180));
 
 					if (this.onMove && typeof(this.onMove) === 'function') {
-						this.onMove(VS.Client, this.joystick.anglePoint, this.joystick.direction);
+						this.onMove(VYLO.Client, this.joystick.anglePoint, this.joystick.direction);
 					}
 				}
 			}
@@ -546,7 +546,7 @@
 		}
 */
 /*
-		VS.Client.showDPad = function() {
+		VYLO.Client.showDPad = function() {
 			if (!dPadRingElement && !dPadUpElement && !dPadDownElement && !dPadLeftElement && !dPadRightElement) {
 				dPadRingElement = this.getInterfaceElement('joypad_interface', 'ring');
 				dPadUpElement = this.getInterfaceElement('joypad_interface', 'up');
@@ -563,118 +563,118 @@
 				
 				dPadUpElement.onTapStart = function(pClient, pX, pY, pFingerID) {
 					this.iconState = 'highlighted';
-					if (VS.World.global.onDPadUp) {
+					if (VYLO.global.onDPadUp) {
 						const realX = pX + this.xPos;
 						const realY = pY + this.yPos;
-						VS.Client.dPadUpPressed = true;
-						VS.World.global.onDPadUp(VS.Client, realX, realY);
+						VYLO.Client.dPadUpPressed = true;
+						VYLO.global.onDPadUp(VYLO.Client, realX, realY);
 					}
 				}
 				dPadDownElement.onTapStart = function(pClient, pX, pY, pFingerID) {
 					this.iconState = 'highlighted';
-					if (VS.World.global.onDPadDown) {
+					if (VYLO.global.onDPadDown) {
 						const realX = pX + this.xPos;
 						const realY = pY + this.yPos;
-						VS.Client.dPadDownPressed = true;
-						VS.World.global.onDPadDown(VS.Client, realX, realY);
+						VYLO.Client.dPadDownPressed = true;
+						VYLO.global.onDPadDown(VYLO.Client, realX, realY);
 					}		
 				}
 				dPadLeftElement.onTapStart = function(pClient, pX, pY, pFingerID) {
 					this.iconState = 'highlighted';
-					if (VS.World.global.onDPadLeft) {
+					if (VYLO.global.onDPadLeft) {
 						const realX = pX + this.xPos;
 						const realY = pY + this.yPos;
-						VS.Client.dPadLeftPressed = true;
-						VS.World.global.onDPadLeft(VS.Client, realX, realY);
+						VYLO.Client.dPadLeftPressed = true;
+						VYLO.global.onDPadLeft(VYLO.Client, realX, realY);
 					}
 				}
 				dPadRightElement.onTapStart = function(pClient, pX, pY, pFingerID) {
 					this.iconState = 'highlighted';
-					if (VS.World.global.onDPadRight) {
+					if (VYLO.global.onDPadRight) {
 						const realX = pX + this.xPos;
 						const realY = pY + this.yPos;
-						VS.Client.dPadRightPressed = true;
-						VS.World.global.onDPadRight(VS.Client, realX, realY);
+						VYLO.Client.dPadRightPressed = true;
+						VYLO.global.onDPadRight(VYLO.Client, realX, realY);
 					}	
 				}
 
 				dPadUpElement.onTapStop = function(pClient, pX, pY, pFingerID) {
 					this.iconState = '';
-					if (VS.World.global.onDPadUpReleased) {
+					if (VYLO.global.onDPadUpReleased) {
 						const realX = pX + this.xPos;
 						const realY = pY + this.yPos;
-						VS.Client.dPadUpPressed = false;
-						VS.World.global.onDPadUpReleased(VS.Client, realX, realY);
+						VYLO.Client.dPadUpPressed = false;
+						VYLO.global.onDPadUpReleased(VYLO.Client, realX, realY);
 					}
 				}
 
 				dPadDownElement.onTapStop = function(pClient, pX, pY, pFingerID) {
 					this.iconState = '';
-					if (VS.World.global.onDPadDownReleased) {
+					if (VYLO.global.onDPadDownReleased) {
 						const realX = pX + this.xPos;
 						const realY = pY + this.yPos;
-						VS.Client.dPadDownPressed = false;
-						VS.World.global.onDPadDownReleased(VS.Client, realX, realY);
+						VYLO.Client.dPadDownPressed = false;
+						VYLO.global.onDPadDownReleased(VYLO.Client, realX, realY);
 					}
 				}
 
 				dPadLeftElement.onTapStop = function(pClient, pX, pY, pFingerID) {
 					this.iconState = '';
-					if (VS.World.global.onDPadLeftReleased) {
+					if (VYLO.global.onDPadLeftReleased) {
 						const realX = pX + this.xPos;
 						const realY = pY + this.yPos;
-						VS.Client.dPadLeftPressed = false;
-						VS.World.global.onDPadLeftReleased(VS.Client, realX, realY);
+						VYLO.Client.dPadLeftPressed = false;
+						VYLO.global.onDPadLeftReleased(VYLO.Client, realX, realY);
 					}
 				}
 
 				dPadRightElement.onTapStop = function(pClient, pX, pY, pFingerID) {
 					this.iconState = '';
-					if (VS.World.global.onDPadRightReleased) {
+					if (VYLO.global.onDPadRightReleased) {
 						const realX = pX + this.xPos;
 						const realY = pY + this.yPos;
-						VS.Client.dPadRightPressed = false;
-						VS.World.global.onDPadRightReleased(VS.Client, realX, realY);
+						VYLO.Client.dPadRightPressed = false;
+						VYLO.global.onDPadRightReleased(VYLO.Client, realX, realY);
 					}
 				}
 
 				dPadUpElement.onTapSlideOff = function(pClient, pX, pY, pFingerID) {
 					this.iconState = '';
-					if (VS.World.global.onDPadUpReleased) {
+					if (VYLO.global.onDPadUpReleased) {
 						const realX = pX + this.xPos;
 						const realY = pY + this.yPos;
-						VS.Client.dPadUpPressed = false;
-						VS.World.global.onDPadUpReleased(VS.Client, realX, realY);
+						VYLO.Client.dPadUpPressed = false;
+						VYLO.global.onDPadUpReleased(VYLO.Client, realX, realY);
 					}
 				}
 
 				dPadDownElement.onTapSlideOff = function(pClient, pX, pY, pFingerID) {
 					this.iconState = '';
-					if (VS.World.global.onDPadDownReleased) {
+					if (VYLO.global.onDPadDownReleased) {
 						const realX = pX + this.xPos;
 						const realY = pY + this.yPos;
-						VS.Client.dPadDownPressed = false;
-						VS.World.global.onDPadDownReleased(VS.Client, realX, realY);
+						VYLO.Client.dPadDownPressed = false;
+						VYLO.global.onDPadDownReleased(VYLO.Client, realX, realY);
 					}
 				}
 
 				dPadLeftElement.onTapSlideOff = function(pClient, pX, pY, pFingerID) {
 					this.iconState = '';
-					if (VS.World.global.onDPadLeftReleased) {
+					if (VYLO.global.onDPadLeftReleased) {
 						const realX = pX + this.xPos;
 						const realY = pY + this.yPos;
-						VS.Client.dPadLeftPressed = false;
-						VS.World.global.onDPadLeftReleased(VS.Client, realX, realY);
+						VYLO.Client.dPadLeftPressed = false;
+						VYLO.global.onDPadLeftReleased(VYLO.Client, realX, realY);
 					}
 				}
 
 				dPadRightElement.onTapSlideOff = function(pClient, pX, pY, pFingerID) {
 					this.iconState = '';
-					if (VS.World.global.onDPadRightReleased) {
+					if (VYLO.global.onDPadRightReleased) {
 						const realX = pX + this.xPos;
 						const realY = pY + this.yPos;
-						VS.Client.dPadRightPressed = false;
-						VS.World.global.onDPadRightReleased(VS.Client, realX, realY);
+						VYLO.Client.dPadRightPressed = false;
+						VYLO.global.onDPadRightReleased(VYLO.Client, realX, realY);
 					}
 				}
 			}
@@ -682,7 +682,7 @@
 			this.dPadShown = true;
 		}
 
-		VS.Client.hideDPad = function() {
+		VYLO.Client.hideDPad = function() {
 			if (this.dPadUpPressed) {
 				dPadUpElement.trackedTouches = [];
 				if (aMobile.touchedDiobs.includes(dPadUpElement)) {
@@ -724,16 +724,16 @@
 		}
 */
 		const getDiobUnderFinger = function(pX, pY) {
-			const screenScale = VS.Client.getScreenScale();
-			const mapVector = VS.Client.getPosFromScreen(pX / screenScale.x, pY / screenScale.y);
+			const screenScale = VYLO.Client.getScreenScale();
+			const mapVector = VYLO.Client.getPosFromScreen(pX / screenScale.x, pY / screenScale.y);
 			let mapDiobs;
-			if (!VS.Client.mob) return;
-			if (!VS.Client.mob.mapName) {
+			if (!VYLO.Client.mob) return;
+			if (!VYLO.Client.mob.mapName) {
 				mapDiobs = [];
 			} else {
-				mapDiobs = VS.Map.getDiobsByPos(VS.Client.mob.mapName, mapVector.x, mapVector.y);
+				mapDiobs = VYLO.Map.getDiobsByPos(VYLO.Client.mob.mapName, mapVector.x, mapVector.y);
 			}
-			const screenDiobs = VS.Client.getInterfaceElementsFromScreen(pX, pY, null, null, null, null, true);
+			const screenDiobs = VYLO.Client.getInterfaceElementsFromScreen(pX, pY, null, null, null, null, true);
 			let highestLayeredScreenDiob;
 			let highestLayedMapDiob; // TO DO
 
@@ -751,7 +751,7 @@
 			
 			// interface elements
 			if (highestLayeredScreenDiob) {
-				if (!VS.Client.checkInterfaceShown(highestLayeredScreenDiob.getInterfaceName()) || highestLayeredScreenDiob.isHidden) {
+				if (!VYLO.Client.checkInterfaceShown(highestLayeredScreenDiob.getInterfaceName()) || highestLayeredScreenDiob.isHidden) {
 					// interface here but not currently shown
 					return null;
 				} else {
@@ -759,7 +759,7 @@
 				}
 			}
 
-			if (!VS.Client.mob.mapName) {
+			if (!VYLO.Client.mob.mapName) {
 				return null;
 			}
 			// PINGABLE
@@ -879,8 +879,8 @@
 					handleZoneTouch(x, y, fingerID);
 				}
 
-				if (VS.Client.onTapStart && typeof(VS.Client.onTapStart) === 'function') {
-					VS.Client.onTapStart(touchedDiob, clamp(touchX, 0, aMobile.windowSize.width), clamp(touchY, 0, aMobile.windowSize.height), fingerID);
+				if (VYLO.Client.onTapStart && typeof(VYLO.Client.onTapStart) === 'function') {
+					VYLO.Client.onTapStart(touchedDiob, clamp(touchX, 0, aMobile.windowSize.width), clamp(touchY, 0, aMobile.windowSize.height), fingerID);
 				}
 				if (touchedDiob) {
 					if (touchedDiob.trackedTouches === undefined) {
@@ -895,11 +895,11 @@
 							spriteRelativeX = clamp(touchX - touchedDiob.xPos, 0, touchedDiob.width);
 							spriteRelativeY = clamp(touchY - touchedDiob.yPos, 0, touchedDiob.height);
 						} else {
-							VS.Client.getPosFromScreen(touchX, touchY, aMobile.mapPositionObject);
+							VYLO.Client.getPosFromScreen(touchX, touchY, aMobile.mapPositionObject);
 							spriteRelativeX = clamp(aMobile.mapPositionObject.x - touchedDiob.xPos, 0, touchedDiob.width);
 							spriteRelativeY = clamp(aMobile.mapPositionObject.y - touchedDiob.yPos, 0, touchedDiob.height);
 						}
-						touchedDiob.onTapStart(VS.Client, spriteRelativeX, spriteRelativeY, fingerID);
+						touchedDiob.onTapStart(VYLO.Client, spriteRelativeX, spriteRelativeY, fingerID);
 					}
 					if (touchedDiob.trackedTouches.length && touchedDiob.touchOpacity === MULTI_TOUCH) {
 						touchedDiob.trackedTouches.push(fingerID);
@@ -941,8 +941,8 @@
 				// console.log(fingerID, 'end');
 				handleZoneRelease(fingerID);
 				
-				if (VS.Client.onTapEnd && typeof(VS.Client.onTapEnd) === 'function') {
-					VS.Client.onTapEnd(touchedDiob, clamp(touchX, 0, aMobile.windowSize.width), clamp(touchY, 0, aMobile.windowSize.height), touches[i].identifier);
+				if (VYLO.Client.onTapEnd && typeof(VYLO.Client.onTapEnd) === 'function') {
+					VYLO.Client.onTapEnd(touchedDiob, clamp(touchX, 0, aMobile.windowSize.width), clamp(touchY, 0, aMobile.windowSize.height), touches[i].identifier);
 				}
 			
 				if (touchedDiob) {
@@ -951,17 +951,17 @@
 							spriteRelativeX = clamp(touchX - touchedDiob.xPos, 0, touchedDiob.width);
 							spriteRelativeY = clamp(touchY - touchedDiob.yPos, 0, touchedDiob.height);
 						} else {
-							VS.Client.getPosFromScreen(touchX, touchY, aMobile.mapPositionObject);
+							VYLO.Client.getPosFromScreen(touchX, touchY, aMobile.mapPositionObject);
 							spriteRelativeX = clamp(aMobile.mapPositionObject.x - touchedDiob.xPos, 0, touchedDiob.width);
 							spriteRelativeY = clamp(aMobile.mapPositionObject.y - touchedDiob.yPos, 0, touchedDiob.height);
 						}
 						if (touchedDiob.touchOpacity === MULTI_TOUCH) {
-							touchedDiob.onTapEnd(VS.Client, spriteRelativeX, spriteRelativeY, fingerID);
+							touchedDiob.onTapEnd(VYLO.Client, spriteRelativeX, spriteRelativeY, fingerID);
 						} else {
 							if (touchedDiob.trackedTouches) {
 								if (touchedDiob.trackedTouches.length) {
 									if (touchedDiob.trackedTouches.includes(fingerID)) {
-										touchedDiob.onTapEnd(VS.Client, spriteRelativeX, spriteRelativeY, fingerID);
+										touchedDiob.onTapEnd(VYLO.Client, spriteRelativeX, spriteRelativeY, fingerID);
 									}
 								}
 							}
@@ -980,11 +980,11 @@
 										spriteRelativeX = clamp(touchX - aMobile.touchedDiobs[j].xPos, 0, aMobile.touchedDiobs[j].width);
 										spriteRelativeY = clamp(touchY - aMobile.touchedDiobs[j].yPos, 0, aMobile.touchedDiobs[j].height);
 									} else {
-										VS.Client.getPosFromScreen(touchX, touchY, aMobile.mapPositionObject);
+										VYLO.Client.getPosFromScreen(touchX, touchY, aMobile.mapPositionObject);
 										spriteRelativeX = clamp(aMobile.mapPositionObject.x - aMobile.touchedDiobs[j].xPos, 0, aMobile.touchedDiobs[j].width);
 										spriteRelativeY = clamp(aMobile.mapPositionObject.y - aMobile.touchedDiobs[j].yPos, 0, aMobile.touchedDiobs[j].height);
 									}
-									aMobile.touchedDiobs[j].onTapStop(VS.Client, spriteRelativeX, spriteRelativeY, fingerID); // you tapped this diob, and finally released it (no matter if it was over the diob or not)
+									aMobile.touchedDiobs[j].onTapStop(VYLO.Client, spriteRelativeX, spriteRelativeY, fingerID); // you tapped this diob, and finally released it (no matter if it was over the diob or not)
 								}
 								if (aMobile.touchedDiobs[j]._slidOff) {
 									aMobile.touchedDiobs[j]._slidOff = false;
@@ -1032,8 +1032,8 @@
 				
 				handleZoneMove(x, y, fingerID);
 
-				if (VS.Client.onTapMove && typeof(VS.Client.onTapMove) === 'function') {
-					VS.Client.onTapMove(touchedDiob, clamp(touchX, 0, aMobile.windowSize.width), clamp(touchY, 0, aMobile.windowSize.height), fingerID);
+				if (VYLO.Client.onTapMove && typeof(VYLO.Client.onTapMove) === 'function') {
+					VYLO.Client.onTapMove(touchedDiob, clamp(touchX, 0, aMobile.windowSize.width), clamp(touchY, 0, aMobile.windowSize.height), fingerID);
 				}
 
 				if (touchedDiob) {
@@ -1042,17 +1042,17 @@
 							spriteRelativeX = clamp(touchX - touchedDiob.xPos, 0, touchedDiob.width);
 							spriteRelativeY = clamp(touchY - touchedDiob.yPos, 0, touchedDiob.height);
 						} else {
-							VS.Client.getPosFromScreen(touchX, touchY, aMobile.mapPositionObject);
+							VYLO.Client.getPosFromScreen(touchX, touchY, aMobile.mapPositionObject);
 							spriteRelativeX = clamp(aMobile.mapPositionObject.x - touchedDiob.xPos, 0, touchedDiob.width);
 							spriteRelativeY = clamp(aMobile.mapPositionObject.y - touchedDiob.yPos, 0, touchedDiob.height);
 						}
 						if (touchedDiob.touchOpacity === MULTI_TOUCH) {
-							touchedDiob.onTapMove(VS.Client, spriteRelativeX, spriteRelativeY, fingerID);
+							touchedDiob.onTapMove(VYLO.Client, spriteRelativeX, spriteRelativeY, fingerID);
 						} else {
 							if (touchedDiob.trackedTouches) {
 								if (touchedDiob.trackedTouches.length) {
 									if (touchedDiob.trackedTouches.includes(fingerID)) {
-										touchedDiob.onTapMove(VS.Client, spriteRelativeX, spriteRelativeY, fingerID);
+										touchedDiob.onTapMove(VYLO.Client, spriteRelativeX, spriteRelativeY, fingerID);
 									}
 								}
 							}
@@ -1070,11 +1070,11 @@
 										spriteRelativeX = clamp(touchX - diob.xPos, 0, diob.width);
 										spriteRelativeY = clamp(touchY - diob.yPos, 0, diob.height);
 									} else {
-										VS.Client.getPosFromScreen(touchX, touchY, aMobile.mapPositionObject);
+										VYLO.Client.getPosFromScreen(touchX, touchY, aMobile.mapPositionObject);
 										spriteRelativeX = clamp(aMobile.mapPositionObject.x - diob.xPos, 0, diob.width);
 										spriteRelativeY = clamp(aMobile.mapPositionObject.y - diob.yPos, 0, diob.height);
 									}
-									diob.onTapSlideOff(VS.Client, spriteRelativeX, spriteRelativeY, fingerID);
+									diob.onTapSlideOff(VYLO.Client, spriteRelativeX, spriteRelativeY, fingerID);
 								}
 							}
 						}
