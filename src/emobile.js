@@ -69,7 +69,7 @@
 			}
 		}
 
-		AListener.addEventListener(VYLO.Client, 'onWindowResize', function(pWidth, pHeight) {
+		EListener.on(VYLO.Client, 'onWindowResize', function(pWidth, pHeight) {
 			EMobile.centerPosition = pWidth / 2;
 			EMobile.windowSize.width = pWidth;
 			EMobile.windowSize.height = pHeight;
