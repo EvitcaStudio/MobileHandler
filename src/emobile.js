@@ -8,39 +8,37 @@
 	});
 
 	const buildMobile = () => {
-		const aMobile = {};
+		const EMobile = {};
 		// an array of all controllers that have been recycled
-		aMobile.recycledControllers = [];
+		EMobile.recycledControllers = [];
 		// an array of all controllers that are active
-		aMobile.activeControllers = [];
+		EMobile.activeControllers = [];
 		// an object holding the controllers in zones
-		aMobile.zonedControllers = {};
+		EMobile.zonedControllers = {};
 		// an array that holds all the diobs that are currently being touched
-		aMobile.touchedDiobs = [];
+		EMobile.touchedDiobs = [];
 		// an object that stores the mapPosition over the screen
-		aMobile.mapPositionObject = { 'x': 0, 'y': 0 };
+		EMobile.mapPositionObject = { 'x': 0, 'y': 0 };
 		// an array that holds the current zones taken, 'left' or 'right'.
-		aMobile.zonesTaken = [];
+		EMobile.zonesTaken = [];
 		// an object containing the screen size of the game.
-		aMobile.middlePosition = VYLO.World.getGameSize().width / 2;
+		EMobile.centerPosition = VYLO.World.getGameSize().width / 2;
 		// an object holding the current game size
-		aMobile.windowSize = VYLO.World.getGameSize();
+		EMobile.windowSize = VYLO.World.getGameSize();
 
-		VYLO.global.aMobile = aMobile;
-		VYLO.Client.aMobile = aMobile;
+		VYLO.global.EMobile = EMobile;
 
-		VYLO.Client.createInterface('aMobile_joystick_interface');
-		VYLO.Client.showInterface('aMobile_joystick_interface');
+		VYLO.Client.createInterface('EMobile_joystick_interface');
+		VYLO.Client.showInterface('EMobile_joystick_interface');
 
-		aMobile.isMobile = false;
+		EMobile.isMobile = false;
 		if(/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|ipad|iris|kindle|Android|Silk|lge |maemo|midp|mmp|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows (ce|phone)|xda|xiino/i.test(navigator.userAgent) || /1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(navigator.userAgent.substr(0,4))) {
-			aMobile.isMobile = true;
+			EMobile.isMobile = true;
 		}
 
-		VYLO.Client.isMobile = aMobile.isMobile;
-		VYLO.Client.___EVITCA_aMobile = true;
+		VYLO.Client.isMobile = EMobile.isMobile;
 
-		aMobile.getDevice = function() {
+		EMobile.getDevice = function() {
 			if ((navigator.userAgent.indexOf('iPhone') > 0 && navigator.userAgent.indexOf('iPad') == -1) || navigator.userAgent.indexOf('iPod') > 0 ) {
 				return 'iPhone'; 
 			} else if(navigator.userAgent.indexOf('iPad') > 0) {
@@ -54,7 +52,7 @@
 
 		// https://github.com/apache/cordova-plugin-vibration#readme
 		// https://developer.mozilla.org/en-US/docs/Web/API/Vibration_API
-		aMobile.vibrate = function(pDuration) {
+		EMobile.vibrate = function(pDuration) {
 			if (typeof(pDuration) === 'undefined') {
 				pDuration = 500;
 			}
@@ -65,17 +63,17 @@
 			}
 		}
 
-		aMobile.getDeviceRAM = function() {
+		EMobile.getDeviceRAM = function() {
 			if (typeof(navigator) !== 'undefined') {
 				return navigator.deviceMemory;
 			}
 		}
 
 		AListener.addEventListener(VYLO.Client, 'onWindowResize', function(pWidth, pHeight) {
-			aMobile.middlePosition = pWidth / 2;
-			aMobile.windowSize.width = pWidth;
-			aMobile.windowSize.height = pHeight;
-			for (const controller of aMobile.activeControllers) {
+			EMobile.centerPosition = pWidth / 2;
+			EMobile.windowSize.width = pWidth;
+			EMobile.windowSize.height = pHeight;
+			for (const controller of EMobile.activeControllers) {
 				const components = controller.getComponents();
 				if (components.joyring.edgeLock) {
 					components.joyring.originalPos = { 'x': components.joyring.xPos, 'y': components.joyring.yPos };
@@ -151,7 +149,7 @@
 				this.joyring.height = this.options.size;
 				this.joyring.halfSize = this.joyring.width / 2;
 				this.joyring.child = this.joystick;
-				this.joyring.aMobileController = true;
+				this.joyring.EMobileController = true;
 				this.joyring.originalPos = { 'x': this.options.position.x, 'y': this.options.position.y };
 				this.joyring.onNew = () => {};
 
@@ -182,9 +180,9 @@
 				this.onMove = this.options.callback.onMove;
 				this.lockedStatus = this.options.lockedStatus;
 				this.lock(this.lockedStatus);
-				VYLO.Client.addInterfaceElement(this.joyring, 'aMobile_joystick_interface', this.joyring.id);
-				VYLO.Client.addInterfaceElement(this.joystick, 'aMobile_joystick_interface', this.joystick.id);
-				aMobile.activeControllers.push(this);
+				VYLO.Client.addInterfaceElement(this.joyring, 'EMobile_joystick_interface', this.joyring.id);
+				VYLO.Client.addInterfaceElement(this.joystick, 'EMobile_joystick_interface', this.joystick.id);
+				EMobile.activeControllers.push(this);
 				this.show();
 			}
 
@@ -226,19 +224,19 @@
 					this.onMove = null;
 					this.onTapStart = null;
 					if (this.zone) {
-						if (aMobile.zonesTaken.includes(this.zone)) {
-							aMobile.zonesTaken.splice(aMobile.zonesTaken.indexOf(this.zone), 1);
+						if (EMobile.zonesTaken.includes(this.zone)) {
+							EMobile.zonesTaken.splice(EMobile.zonesTaken.indexOf(this.zone), 1);
 						}
 						if (this.zone === 'left' || this.zone === 'right') {
-							aMobile.zonedControllers[this.zone] = null;
+							EMobile.zonedControllers[this.zone] = null;
 						}
 					}
 					this.zone = null;
 					this.type = 'stationary';
 					this.lockedStatus = null;
 					this.options = {};
-					if (aMobile.touchedDiobs.includes(this.joyring)) {
-						aMobile.touchedDiobs.splice(aMobile.touchedDiobs.indexOf(this.joyring), 1);
+					if (EMobile.touchedDiobs.includes(this.joyring)) {
+						EMobile.touchedDiobs.splice(EMobile.touchedDiobs.indexOf(this.joyring), 1);
 					}
 				}
 			}
@@ -270,16 +268,16 @@
 				if (pOptions.type === 'traversal' || pOptions.type === 'static') {
 					// if there is already a controller taking up a space, then you must use a zone. If there is no controller, then the entire screen is the zone
 					// do not define a zone if you know this controller will be the only controller on screen
-					if (aMobile.zonesTaken.length) {
-						if (!pOptions.zone || typeof(pOptions.zone) !== 'string' || aMobile.zonesTaken.includes(pOptions.zone)) {
+					if (EMobile.zonesTaken.length) {
+						if (!pOptions.zone || typeof(pOptions.zone) !== 'string' || EMobile.zonesTaken.includes(pOptions.zone)) {
 							// warning
-							console.error('aMobile: When using a controller that is of the traversal type, or the static type. A zone is REQUIRED. Only two controllers of traversal or static or one of each can be used at a time. These controllers have to have opposing zones. Left | Right')
+							console.error('EMobile: When using a controller that is of the traversal type, or the static type. A zone is REQUIRED. Only two controllers of traversal or static or one of each can be used at a time. These controllers have to have opposing zones. Left | Right')
 							return;
 						}
 					}
 					if (pOptions.zone === 'left' || pOptions.zone === 'right') {
-						aMobile.zonesTaken.push(pOptions.zone);
-						aMobile.zonedControllers[pOptions.zone] = this;
+						EMobile.zonesTaken.push(pOptions.zone);
+						EMobile.zonedControllers[pOptions.zone] = this;
 						this.zone = pOptions.zone;
 					}
 				}
@@ -505,11 +503,11 @@
 
 			destroy() {
 				this.reset();
-				if (aMobile.activeControllers.includes(this)) {
-					aMobile.activeControllers.splice(aMobile.activeControllers.indexOf(this), 1);
+				if (EMobile.activeControllers.includes(this)) {
+					EMobile.activeControllers.splice(EMobile.activeControllers.indexOf(this), 1);
 				}
-				if (aMobile.recycledControllers.length < MAX_RECYCLED_CONTROLLERS) {
-					aMobile.recycledControllers.push(this);
+				if (EMobile.recycledControllers.length < MAX_RECYCLED_CONTROLLERS) {
+					EMobile.recycledControllers.push(this);
 				}
 			}
 
@@ -532,16 +530,16 @@
 			}
 		}
 
-		aMobile.createController = (pOptions) => {
-			if (aMobile.recycledControllers.length) {
-				const controller = aMobile.recycledControllers.pop();
+		EMobile.createController = (pOptions) => {
+			if (EMobile.recycledControllers.length) {
+				const controller = EMobile.recycledControllers.pop();
 				controller.build(pOptions);
 				return controller;
 			}
 			return new Controller(pOptions);
 		}
 /*
-		aMobile.createDPad = () => {
+		EMobile.createDPad = () => {
 			return new Dpad(pOptions);
 		}
 */
@@ -685,8 +683,8 @@
 		VYLO.Client.hideDPad = function() {
 			if (this.dPadUpPressed) {
 				dPadUpElement.trackedTouches = [];
-				if (aMobile.touchedDiobs.includes(dPadUpElement)) {
-					aMobile.touchedDiobs.splice(aMobile.touchedDiobs.indexOf(dPadUpElement), 1);
+				if (EMobile.touchedDiobs.includes(dPadUpElement)) {
+					EMobile.touchedDiobs.splice(EMobile.touchedDiobs.indexOf(dPadUpElement), 1);
 				}
 				this.dPadUpPressed = false;
 				dPadUpElement.onTapStop(this, 0, 0, null);
@@ -694,8 +692,8 @@
 
 			if (this.dPadDownPressed) {
 				dPadDownElement.trackedTouches = [];
-				if (aMobile.touchedDiobs.includes(dPadDownElement)) {
-					aMobile.touchedDiobs.splice(aMobile.touchedDiobs.indexOf(dPadDownElement), 1);
+				if (EMobile.touchedDiobs.includes(dPadDownElement)) {
+					EMobile.touchedDiobs.splice(EMobile.touchedDiobs.indexOf(dPadDownElement), 1);
 				}
 				this.dPadDownPressed = false;
 				dPadDownElement.onTapStop(this, 0, 0, null);
@@ -703,8 +701,8 @@
 
 			if (this.dPadLeftPressed) {
 				dPadLeftElement.trackedTouches = [];
-				if (aMobile.touchedDiobs.includes(dPadLeftElement)) {
-					aMobile.touchedDiobs.splice(aMobile.touchedDiobs.indexOf(dPadLeftElement), 1);
+				if (EMobile.touchedDiobs.includes(dPadLeftElement)) {
+					EMobile.touchedDiobs.splice(EMobile.touchedDiobs.indexOf(dPadLeftElement), 1);
 				}
 				this.dPadLeftPressed = false;
 				dPadLeftElement.onTapStop(this, 0, 0, null);
@@ -712,8 +710,8 @@
 
 			if (this.dPadRightPressed) {
 				dPadRightElement.trackedTouches = [];
-				if (aMobile.touchedDiobs.includes(dPadRightElement)) {
-					aMobile.touchedDiobs.splice(aMobile.touchedDiobs.indexOf(dPadRightElement), 1);
+				if (EMobile.touchedDiobs.includes(dPadRightElement)) {
+					EMobile.touchedDiobs.splice(EMobile.touchedDiobs.indexOf(dPadRightElement), 1);
 				}
 				this.dPadRightPressed = false;
 				dPadRightElement.onTapStop(this, 0, 0, null);
@@ -738,7 +736,7 @@
 			let highestLayedMapDiob; // TO DO
 
 			for (let i = 0; i < screenDiobs.length; i++) {
-				if (screenDiobs[i].touchOpacity || (screenDiobs[i].touchOpacity === undefined && screenDiobs[i].type !== 'Interface/aMobile/Joyring')) {
+				if (screenDiobs[i].touchOpacity || (screenDiobs[i].touchOpacity === undefined && screenDiobs[i].type !== 'Interface/EMobile/Joyring')) {
 					if (!highestLayeredScreenDiob) {
 						highestLayeredScreenDiob = screenDiobs[i];
 					}
@@ -775,20 +773,20 @@
 
 		const handleZoneTouch = (pX, pY, pFingerID) => {
 			// When a finger is placed onto the screen, if it is a zoned controller track it and update it
-			if (aMobile.zonesTaken.length) {
-				const rightZoneController = aMobile.zonedControllers['right'];
-				const leftZoneController = aMobile.zonedControllers['left'];
+			if (EMobile.zonesTaken.length) {
+				const rightZoneController = EMobile.zonedControllers['right'];
+				const leftZoneController = EMobile.zonedControllers['left'];
 				// if the screen is pressed on the right|left side and if the right|left zone controller is not active
 				// or if the right|left zone controller is a traversal controller, then assign the finger ID to the controller
 				// and update it
 				// traversal controllers can update their tracked finger and position when another finger takes over
-				if (pX > aMobile.middlePosition && rightZoneController) {
+				if (pX > EMobile.centerPosition && rightZoneController) {
 					if (!rightZoneController.activeInZone || rightZoneController.type === 'traversal') {
 						rightZoneController.controllingFinger = pFingerID;
 						rightZoneController.activeInZone = true;
 						rightZoneController.update(pX, pY, true);
 					}
-				} else if (pX < aMobile.middlePosition && leftZoneController) {
+				} else if (pX < EMobile.centerPosition && leftZoneController) {
 					if (!leftZoneController.activeInZone || leftZoneController.type === 'traversal') {
 						leftZoneController.controllingFinger = pFingerID;
 						leftZoneController.activeInZone = true;
@@ -798,7 +796,7 @@
 			} else {
 				// if there are no established zones, and there is a static controller or a traversal controller created then those types of controllers can 
 				// use the entire screen as their zone. Only one of these controllers can control the entire screen. If more than one of these controllers are created then zones will be needed.
-				for (const controller of aMobile.activeControllers) {
+				for (const controller of EMobile.activeControllers) {
 					if ((!controller.activeInZone || controller.type === 'traversal') && (controller.type === 'traversal' || controller.type === 'static')) {
 						controller.controllingFinger = pFingerID;
 						controller.activeInZone = true;
@@ -811,9 +809,9 @@
 
 		const handleZoneRelease = (pFingerID) => {
 			// When a finger on the screen is removed, check if the fingerID belongs to a zoned controller, if it does release that controller
-			if (aMobile.zonesTaken.length) {
-				const rightZoneController = aMobile.zonedControllers['right'];
-				const leftZoneController = aMobile.zonedControllers['left'];
+			if (EMobile.zonesTaken.length) {
+				const rightZoneController = EMobile.zonedControllers['right'];
+				const leftZoneController = EMobile.zonedControllers['left'];
 
 				if (rightZoneController && rightZoneController.controllingFinger === pFingerID && rightZoneController.activeInZone) {
 					// console.log('right zone controller released');
@@ -824,7 +822,7 @@
 				}
 
 			} else {
-				for (const controller of aMobile.activeControllers) {
+				for (const controller of EMobile.activeControllers) {
 					if ((controller.type === 'traversal' || controller.type === 'static') && controller.activeInZone) {
 						if (controller.controllingFinger === pFingerID) {
 							controller.release();
@@ -837,9 +835,9 @@
 
 		const handleZoneMove = (pX, pY, pFingerID) => {
 			// When a finger on the screen moves, check if the fingerID belongs to a zoned controller, if it does update that zoned controller
-			if (aMobile.zonesTaken.length) {
-				const rightZoneController = aMobile.zonedControllers['right'];
-				const leftZoneController = aMobile.zonedControllers['left'];
+			if (EMobile.zonesTaken.length) {
+				const rightZoneController = EMobile.zonedControllers['right'];
+				const leftZoneController = EMobile.zonedControllers['left'];
 
 				if (rightZoneController && rightZoneController.controllingFinger === pFingerID && rightZoneController.activeInZone) {
 					rightZoneController.update(pX, pY);
@@ -847,7 +845,7 @@
 					leftZoneController.update(pX, pY);
 				}
 			} else {
-				for (const controller of aMobile.activeControllers) {
+				for (const controller of EMobile.activeControllers) {
 					if ((controller.type === 'traversal' || controller.type === 'static') && controller.activeInZone) {
 						if (controller.controllingFinger === pFingerID) {
 							controller.update(pX, pY);
@@ -880,7 +878,7 @@
 				}
 
 				if (VYLO.Client.onTapStart && typeof(VYLO.Client.onTapStart) === 'function') {
-					VYLO.Client.onTapStart(touchedDiob, clamp(touchX, 0, aMobile.windowSize.width), clamp(touchY, 0, aMobile.windowSize.height), fingerID);
+					VYLO.Client.onTapStart(touchedDiob, clamp(touchX, 0, EMobile.windowSize.width), clamp(touchY, 0, EMobile.windowSize.height), fingerID);
 				}
 				if (touchedDiob) {
 					if (touchedDiob.trackedTouches === undefined) {
@@ -895,9 +893,9 @@
 							spriteRelativeX = clamp(touchX - touchedDiob.xPos, 0, touchedDiob.width);
 							spriteRelativeY = clamp(touchY - touchedDiob.yPos, 0, touchedDiob.height);
 						} else {
-							VYLO.Client.getPosFromScreen(touchX, touchY, aMobile.mapPositionObject);
-							spriteRelativeX = clamp(aMobile.mapPositionObject.x - touchedDiob.xPos, 0, touchedDiob.width);
-							spriteRelativeY = clamp(aMobile.mapPositionObject.y - touchedDiob.yPos, 0, touchedDiob.height);
+							VYLO.Client.getPosFromScreen(touchX, touchY, EMobile.mapPositionObject);
+							spriteRelativeX = clamp(EMobile.mapPositionObject.x - touchedDiob.xPos, 0, touchedDiob.width);
+							spriteRelativeY = clamp(EMobile.mapPositionObject.y - touchedDiob.yPos, 0, touchedDiob.height);
 						}
 						touchedDiob.onTapStart(VYLO.Client, spriteRelativeX, spriteRelativeY, fingerID);
 					}
@@ -909,13 +907,13 @@
 							touchedDiob.trackedTouches.push(fingerID);
 						}
 					}
-					if (touchedDiob.aMobileController) {
+					if (touchedDiob.EMobileController) {
 						const joyring = touchedDiob;
 						joyring.controller.update(x, y, true);
 					}
 
-					if (!aMobile.touchedDiobs.includes(touchedDiob)) {
-						aMobile.touchedDiobs.push(touchedDiob);
+					if (!EMobile.touchedDiobs.includes(touchedDiob)) {
+						EMobile.touchedDiobs.push(touchedDiob);
 					}
 				}
 			}
@@ -942,7 +940,7 @@
 				handleZoneRelease(fingerID);
 				
 				if (VYLO.Client.onTapEnd && typeof(VYLO.Client.onTapEnd) === 'function') {
-					VYLO.Client.onTapEnd(touchedDiob, clamp(touchX, 0, aMobile.windowSize.width), clamp(touchY, 0, aMobile.windowSize.height), touches[i].identifier);
+					VYLO.Client.onTapEnd(touchedDiob, clamp(touchX, 0, EMobile.windowSize.width), clamp(touchY, 0, EMobile.windowSize.height), touches[i].identifier);
 				}
 			
 				if (touchedDiob) {
@@ -951,9 +949,9 @@
 							spriteRelativeX = clamp(touchX - touchedDiob.xPos, 0, touchedDiob.width);
 							spriteRelativeY = clamp(touchY - touchedDiob.yPos, 0, touchedDiob.height);
 						} else {
-							VYLO.Client.getPosFromScreen(touchX, touchY, aMobile.mapPositionObject);
-							spriteRelativeX = clamp(aMobile.mapPositionObject.x - touchedDiob.xPos, 0, touchedDiob.width);
-							spriteRelativeY = clamp(aMobile.mapPositionObject.y - touchedDiob.yPos, 0, touchedDiob.height);
+							VYLO.Client.getPosFromScreen(touchX, touchY, EMobile.mapPositionObject);
+							spriteRelativeX = clamp(EMobile.mapPositionObject.x - touchedDiob.xPos, 0, touchedDiob.width);
+							spriteRelativeY = clamp(EMobile.mapPositionObject.y - touchedDiob.yPos, 0, touchedDiob.height);
 						}
 						if (touchedDiob.touchOpacity === MULTI_TOUCH) {
 							touchedDiob.onTapEnd(VYLO.Client, spriteRelativeX, spriteRelativeY, fingerID);
@@ -970,32 +968,32 @@
 				}
 
 				// find all diobs that you were touching, and call `onTapStop` on them, since the finger that touched them has been removed
-				for (let j = aMobile.touchedDiobs.length - 1; j >= 0; j--) {
-					if (aMobile.touchedDiobs[j].trackedTouches) {
-						if (aMobile.touchedDiobs[j].trackedTouches.length) {
-							if (aMobile.touchedDiobs[j].trackedTouches.includes(fingerID)) {
-								aMobile.touchedDiobs[j].trackedTouches.splice(aMobile.touchedDiobs[j].trackedTouches.indexOf(fingerID), 1);
-								if (aMobile.touchedDiobs[j].onTapStop && typeof(aMobile.touchedDiobs[j].onTapStop) === 'function') {
-									if (aMobile.touchedDiobs[j].baseType === 'Interface') {
-										spriteRelativeX = clamp(touchX - aMobile.touchedDiobs[j].xPos, 0, aMobile.touchedDiobs[j].width);
-										spriteRelativeY = clamp(touchY - aMobile.touchedDiobs[j].yPos, 0, aMobile.touchedDiobs[j].height);
+				for (let j = EMobile.touchedDiobs.length - 1; j >= 0; j--) {
+					if (EMobile.touchedDiobs[j].trackedTouches) {
+						if (EMobile.touchedDiobs[j].trackedTouches.length) {
+							if (EMobile.touchedDiobs[j].trackedTouches.includes(fingerID)) {
+								EMobile.touchedDiobs[j].trackedTouches.splice(EMobile.touchedDiobs[j].trackedTouches.indexOf(fingerID), 1);
+								if (EMobile.touchedDiobs[j].onTapStop && typeof(EMobile.touchedDiobs[j].onTapStop) === 'function') {
+									if (EMobile.touchedDiobs[j].baseType === 'Interface') {
+										spriteRelativeX = clamp(touchX - EMobile.touchedDiobs[j].xPos, 0, EMobile.touchedDiobs[j].width);
+										spriteRelativeY = clamp(touchY - EMobile.touchedDiobs[j].yPos, 0, EMobile.touchedDiobs[j].height);
 									} else {
-										VYLO.Client.getPosFromScreen(touchX, touchY, aMobile.mapPositionObject);
-										spriteRelativeX = clamp(aMobile.mapPositionObject.x - aMobile.touchedDiobs[j].xPos, 0, aMobile.touchedDiobs[j].width);
-										spriteRelativeY = clamp(aMobile.mapPositionObject.y - aMobile.touchedDiobs[j].yPos, 0, aMobile.touchedDiobs[j].height);
+										VYLO.Client.getPosFromScreen(touchX, touchY, EMobile.mapPositionObject);
+										spriteRelativeX = clamp(EMobile.mapPositionObject.x - EMobile.touchedDiobs[j].xPos, 0, EMobile.touchedDiobs[j].width);
+										spriteRelativeY = clamp(EMobile.mapPositionObject.y - EMobile.touchedDiobs[j].yPos, 0, EMobile.touchedDiobs[j].height);
 									}
-									aMobile.touchedDiobs[j].onTapStop(VYLO.Client, spriteRelativeX, spriteRelativeY, fingerID); // you tapped this diob, and finally released it (no matter if it was over the diob or not)
+									EMobile.touchedDiobs[j].onTapStop(VYLO.Client, spriteRelativeX, spriteRelativeY, fingerID); // you tapped this diob, and finally released it (no matter if it was over the diob or not)
 								}
-								if (aMobile.touchedDiobs[j]._slidOff) {
-									aMobile.touchedDiobs[j]._slidOff = false;
+								if (EMobile.touchedDiobs[j]._slidOff) {
+									EMobile.touchedDiobs[j]._slidOff = false;
 								}
-								if (aMobile.touchedDiobs[j].aMobileController) {
-									const joyring = aMobile.touchedDiobs[j];
+								if (EMobile.touchedDiobs[j].EMobileController) {
+									const joyring = EMobile.touchedDiobs[j];
 									if (!joyring.trackedTouches.length) {
 										joyring.controller.release();
 									}
 								}
-								aMobile.touchedDiobs.splice(j, 1);
+								EMobile.touchedDiobs.splice(j, 1);
 							}
 						}
 					}
@@ -1006,9 +1004,9 @@
 		const handleCancel = (pEvent) => {
 			handleEnd(pEvent);
 			// remove all touchedDiobs since this was a touchCancel event, you must of hit some UI, meaning all fingers should be considered null and void
-			for (let j = aMobile.touchedDiobs.length - 1; j >= 0; j--) {
-				aMobile.touchedDiobs[j].trackedTouches = [];
-				aMobile.touchedDiobs.splice(j, 1);
+			for (let j = EMobile.touchedDiobs.length - 1; j >= 0; j--) {
+				EMobile.touchedDiobs[j].trackedTouches = [];
+				EMobile.touchedDiobs.splice(j, 1);
 			}
 		}
 
@@ -1033,7 +1031,7 @@
 				handleZoneMove(x, y, fingerID);
 
 				if (VYLO.Client.onTapMove && typeof(VYLO.Client.onTapMove) === 'function') {
-					VYLO.Client.onTapMove(touchedDiob, clamp(touchX, 0, aMobile.windowSize.width), clamp(touchY, 0, aMobile.windowSize.height), fingerID);
+					VYLO.Client.onTapMove(touchedDiob, clamp(touchX, 0, EMobile.windowSize.width), clamp(touchY, 0, EMobile.windowSize.height), fingerID);
 				}
 
 				if (touchedDiob) {
@@ -1042,9 +1040,9 @@
 							spriteRelativeX = clamp(touchX - touchedDiob.xPos, 0, touchedDiob.width);
 							spriteRelativeY = clamp(touchY - touchedDiob.yPos, 0, touchedDiob.height);
 						} else {
-							VYLO.Client.getPosFromScreen(touchX, touchY, aMobile.mapPositionObject);
-							spriteRelativeX = clamp(aMobile.mapPositionObject.x - touchedDiob.xPos, 0, touchedDiob.width);
-							spriteRelativeY = clamp(aMobile.mapPositionObject.y - touchedDiob.yPos, 0, touchedDiob.height);
+							VYLO.Client.getPosFromScreen(touchX, touchY, EMobile.mapPositionObject);
+							spriteRelativeX = clamp(EMobile.mapPositionObject.x - touchedDiob.xPos, 0, touchedDiob.width);
+							spriteRelativeY = clamp(EMobile.mapPositionObject.y - touchedDiob.yPos, 0, touchedDiob.height);
 						}
 						if (touchedDiob.touchOpacity === MULTI_TOUCH) {
 							touchedDiob.onTapMove(VYLO.Client, spriteRelativeX, spriteRelativeY, fingerID);
@@ -1060,7 +1058,7 @@
 					}
 				}
 				
-				for (const diob of aMobile.touchedDiobs) {
+				for (const diob of EMobile.touchedDiobs) {
 					if (diob.trackedTouches.includes(fingerID)) {
 						if (diob !== touchedDiob) {
 							if (!diob._slidOff) {
@@ -1070,15 +1068,15 @@
 										spriteRelativeX = clamp(touchX - diob.xPos, 0, diob.width);
 										spriteRelativeY = clamp(touchY - diob.yPos, 0, diob.height);
 									} else {
-										VYLO.Client.getPosFromScreen(touchX, touchY, aMobile.mapPositionObject);
-										spriteRelativeX = clamp(aMobile.mapPositionObject.x - diob.xPos, 0, diob.width);
-										spriteRelativeY = clamp(aMobile.mapPositionObject.y - diob.yPos, 0, diob.height);
+										VYLO.Client.getPosFromScreen(touchX, touchY, EMobile.mapPositionObject);
+										spriteRelativeX = clamp(EMobile.mapPositionObject.x - diob.xPos, 0, diob.width);
+										spriteRelativeY = clamp(EMobile.mapPositionObject.y - diob.yPos, 0, diob.height);
 									}
 									diob.onTapSlideOff(VYLO.Client, spriteRelativeX, spriteRelativeY, fingerID);
 								}
 							}
 						}
-						if (diob.aMobileController) {
+						if (diob.EMobileController) {
 							const joyring = diob;
 							joyring.controller.update(x, y);
 						}
