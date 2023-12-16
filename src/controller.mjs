@@ -117,7 +117,7 @@ export class Controller {
      * @param {boolean} pFade - Whether to fade the joystick to it's inactive alpha preset
      */
 	handleTransition(pFade) {
-        let start = { 'alpha': this.joystick.alpha };
+        let start = { 'alpha': this.joyring.alpha };
         let end;
         const duration = this.options.transitionTime;
         const easing = Tween.easeInOutQuad;
