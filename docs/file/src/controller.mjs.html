@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../../">
+  <title data-ice="title">src/controller.mjs | MobileHandler</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  <script src="script/manual.js"></script>
+<meta name="description" content="The MobileHandler module provides a user-friendly interface for game developers to integrate touch-based controls for their game characters on mobile devices. It offers features for creating a visual joystick on the screen and facilitates mobile device interaction, including accessing device information and triggering device vibrations."><meta property="twitter:card" content="summary"><meta property="twitter:title" content="MobileHandler"><meta property="twitter:description" content="The MobileHandler module provides a user-friendly interface for game developers to integrate touch-based controls for their game characters on mobile devices. It offers features for creating a visual joystick on the screen and facilitates mobile device interaction, including accessing device information and triggering device vibrations."><meta property="twitter:image" content="./evitcastudio_round_branding.png"></head>
+<body class="layout-container" data-ice="rootContainer">
+
+<header>
+  <a href="./" style="display: flex; align-items: center;"><img src="./image/brand_logo.png" style="width:34px;"></a>
+  
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+<a style="position:relative; top:3px;" href="https://github.com/EvitcaStudio/MobileHandler"><img width="20px" src="./image/github.png"></a></header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/controller.mjs~Controller.html">Controller</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/mobile-handler.mjs~MobileHandlerSingleton.html">MobileHandlerSingleton</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-MobileHandler">MobileHandler</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><h1 data-ice="title">src/controller.mjs</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import { Tween } from &apos;./vendor/tween.min.mjs&apos;;
+import { Utils } from &apos;./vendor/utils.min.mjs&apos;;
+import { MobileHandler } from &apos;./mobile-handler.mjs&apos;
+
+/**
+ * When using a controller that is of the traversal type, or the static type
+ * a zone is REQUIRED. Only two controllers of traversal or static or one of each can be used at a time. 
+ * These controllers have to have opposing zones. Left | Right
+ * Traversal: spawns at the touch position and when dragged, follows the finger across the screen
+ * Static: spawns at the touch position, cannot move from that location, just updates the joystick and will clamp at its limit
+ * Stationary: cannot move from it&apos;s position at all, will just update the joystick and clamp it at its limit, can be pressed from anywhere on screen.
+ */
+export class Controller {
+    /**
+     * A reference to the tween instance this controller uses to tween the alpha when it becomes inactive.
+     * This reference is so that developers can pause this tween and resume it when needed.
+     * Calling this.tween.pause() and this.tween.resume() for instance when pausing and unpausing the game.
+     */
+    tween = null;
+    /**
+     * Builds this controller with the options that were passed in.
+     * @param {Object} pOptions - The options of this controller.
+     * @param {string} pOptions.type - The way this controller will behave. stationary | traversal | static.
+     * @param {number} pOptions.size - The width/height of the joystick. The width &amp; height of the joystick should be the same.
+     * @param {Object} pOptions.position - The initial position of the joystick.
+     * @param {string} pOptions.position.x - The initial x position of the joystick.
+     * @param {string} pOptions.position.x - The initial y position of the joystick.
+     * @param {string} pOptions.lockedDimension - The locked dimension of the joystick. both | vertical | horizontal. This is used to lock the joystick from moving in certain dimensions. If this joystick&apos;s type is traversal it cannot be locked.
+     * @param {string} pOptions.zone - The zone the joystick will occupy. If there is already a controller of the traversal or static type, then you must use a zone. If there is only one controller no zone is needed. left | right This will give each controller equal space on the left / right sides of the screen.
+     * @param {number} pOptions.inactiveAlpha - The alpha value the joystick will be when it is considered to be inactive.
+     * @param {number} pOptions.transitionTime - How long it takes in ms to transition to the inactiveAlpha value.
+     * @param {number} pOptions.scale - The scale you want the joystick controller to be.
+     * @param {number} pOptions.plane - The plane of the joystick controller.
+     * @param {number} pOptions.layer - The layer of the joystick controller.
+     * @param {string} pOptions.atlasName - The atlasName of the joystick.
+     * @param {string} pOptions.joystickIconName - The iconName of the joystick.
+     * @param {string} pOptions.joyringIconName - The iconName of the joyring.
+     * @param {Object} pOptions.callback - An object holding options callbacks to attach to events the joystick emits. 
+     * pOptions.callback.onTapStart - Callback to be called when the joystick is touched after being released.
+     * pOptions.callback.onRelease - Callback to be called when the joystick is released and no longer held.
+     * pOptions.callback.onMove - Callback to be called when the joystick is moved.
+     * @param {Object} pOptions.callback.onMove - Callback to be called when the joystick is moved.
+     * @param {Function} pOptions.callback.onTapStart - Callback to be called when the joystick is touched after being released.
+     * @param {Function} pOptions.callback.onRelease - Callback to be called when the joystick is released and no longer held.
+     * @param {Function} pOptions.callback.onMove - Callback to be called when the joystick is moved.
+     */
+	constructor(pOptions) {
+		this.joyring = null;
+		this.joystick = null;
+		this.options = null;
+		this.lockedDimension = null;
+        this.tween = new Tween();
+		this.build(pOptions);
+	}
+    /**
+     * @private
+     * Setup the controller with the options that this controller class instance has from being initiated
+     */
+	setup() {
+        // Setup the joyring element
+		this.joyring.atlasName = this.options.atlasName;
+		this.joyring.iconName = this.options.joyringIconName;
+		this.joyring.touchOpacity = MobileHandler.constructor.MULTI_TOUCH;
+		this.joyring.interfaceType = &apos;default&apos;;
+		this.joyring.color = { &apos;tint&apos;: 0xFFFFFF };
+		this.joyring.scale = 1;
+		this.joyring.anchor = { &apos;x&apos;: 0.5, &apos;y&apos;: 0.5 };
+		this.joyring.plane = this.options.plane;
+		this.joyring.layer = this.options.layer;
+		this.joyring.width = this.options.size;
+		this.joyring.height = this.options.size;
+		this.joyring.halfSize = this.joyring.width / 2;
+		this.joyring.child = this.joystick;
+		this.joyring.isMobileHandlerController = true;
+		this.joyring.originalPos = { &apos;x&apos;: this.options.position.x, &apos;y&apos;: this.options.position.y };
+		this.joyring.onNew = () =&gt; {};
+        // Setup the joystick element
+		this.joystick.atlasName = this.options.atlasName;
+		this.joystick.iconName = this.options.joystickIconName;
+		this.joystick.touchOpacity = MobileHandler.constructor.NO_TOUCH;
+		this.joystick.interfaceType = &apos;default&apos;;
+		this.joystick.color = { &apos;tint&apos;: 0xFFFFFF };
+		this.joystick.scale = 1;
+		this.joystick.anchor = { &apos;x&apos;: 0.5, &apos;y&apos;: 0.5 };
+		this.joystick.startPos = { &apos;x&apos;: 0, &apos;y&apos;: 0 };
+		this.joystick.width = this.options.size / 2;
+		this.joystick.height = this.options.size / 2;
+		this.joystick.plane = this.options.plane;
+        // The inner ring must be layered above the outer ring
+		this.joystick.layer = this.options.layer + 1;
+		this.joystick.anglePoint = 0;
+		this.joystick.direction = &apos;none&apos;;
+		this.joystick.halfSize = this.joystick.width / 2;
+		this.joystick.parent = this.joyring;
+		this.joystick.originalPos = { &apos;x&apos;: this.joyring.originalPos.x + this.joystick.halfSize, &apos;y&apos;: this.joyring.originalPos.y + this.joystick.halfSize };
+		this.joystick.onNew = () =&gt; {};
+        // Keep references to this joystick
+		this.joyring.controller = this;
+		this.joystick.controller = this;
+        // Assign event funcs
+		this.onTapStart = this.options.callback.onTapStart;
+		this.onRelease = this.options.callback.onRelease;
+		this.onMove = this.options.callback.onMove;
+        // Assign locked status
+		this.lockedDimension = this.options.lockedDimension;
+		this.lock(this.lockedDimension);
+        // Create the joystick and joyring elements
+		VYLO.Client.addInterfaceElement(this.joyring, &apos;mobile-handler-interface&apos;, this.joyring.id);
+		VYLO.Client.addInterfaceElement(this.joystick, &apos;mobile-handler-interface&apos;, this.joystick.id);
+        // Track this controller
+		MobileHandler.activeControllers.push(this);
+		this.show();
+	}
+    /**
+     * Tweens the controller to it&apos;s inactive alpha preset, or from it&apos;s inactive value preset to full alpha.
+     * @private
+     * @param {boolean} pFade - Whether to fade the joystick to it&apos;s inactive alpha preset
+     */
+	handleTransition(pFade) {
+        let start = { &apos;alpha&apos;: this.joystick.alpha };
+        let end;
+        const duration = this.options.transitionTime;
+        const easing = Tween.easeInOutQuad;
+        
+		if (this.options.inactiveAlpha || this.options.inactiveAlpha === 0) {
+            // Stop any ongoing tween animation
+            this.tween.stop();
+			if (pFade) {
+                end = { &apos;alpha&apos;: this.options.inactiveAlpha };
+			} else {
+                end = { &apos;alpha&apos;: 1 };				
+			}
+            // Makes no sense to tween a animation if the start and end value is the same
+            if (start.alpha === end.alpha) return;
+            // Animate the transition
+            this.tween.build({
+                start,
+                end,
+                duration,
+                easing
+            }).animate(({ alpha }) =&gt; {
+                this.joyring.alpha = alpha;
+                this.joystick.alpha = alpha;
+            });
+		}
+	}
+    /**
+     * Resets the joystick to default.
+     * @private
+     * @param {*} pSoft - Softly resets the joystick in the event it is hidden
+     */
+	reset(pSoft) {
+		const angle = this.joystick.anglePoint;
+		const direction = this.joystick.direction;
+		this.joystick.alpha = this.options.inactiveAlpha;
+		this.joystick.startPos.x = this.joystick.startPos.y = 0;
+		this.joystick.direction = &apos;none&apos;;
+		this.joystick.anglePoint = 0;
+		this.joyring.trackedTouches = [];
+		this.joyring.layer = this.options.layer;
+		this.joystick.layer = this.options.layer + 10;
+		this.activeInZone = false;
+		this.controllingFinger = null;
+
+		if (this.active) {
+			this.active = false;
+			if (typeof(this.onRelease) === &apos;function&apos;) {
+				this.onRelease(VYLO.Client, angle, direction);
+			}
+		}
+		if (!pSoft) {
+			this.onRelease = null;
+			this.onMove = null;
+			this.onTapStart = null;
+			if (this.zone) {
+				if (MobileHandler.reservedScreenZones.includes(this.zone)) {
+					MobileHandler.reservedScreenZones.splice(MobileHandler.reservedScreenZones.indexOf(this.zone), 1);
+				}
+				if (this.zone === &apos;left&apos; || this.zone === &apos;right&apos;) {
+					MobileHandler.zonedControllers[this.zone] = null;
+				}
+			}
+			this.zone = null;
+			this.type = &apos;stationary&apos;;
+			this.lockedDimension = null;
+			this.options = {};
+			if (MobileHandler.touchedDiobs.includes(this.joyring)) {
+				MobileHandler.touchedDiobs.splice(MobileHandler.touchedDiobs.indexOf(this.joyring), 1);
+			}
+		}
+	}
+    /**
+     * Builds this controller with the options that were passed in.
+     * @param {Object} pOptions - The options of this controller.
+     * @param {string} pOptions.type - The way this controller will behave. stationary | traversal | static.
+     * @param {number} pOptions.size - The width/height of the joystick. The width &amp; height of the joystick should be the same.
+     * @param {Object} pOptions.position - The initial position of the joystick.
+     * @param {string} pOptions.position.x - The initial x position of the joystick.
+     * @param {string} pOptions.position.x - The initial y position of the joystick.
+     * @param {string} pOptions.lockedDimension - The locked dimension of the joystick. both | vertical | horizontal. This is used to lock the joystick from moving in certain dimensions. If this joystick&apos;s type is traversal it cannot be locked.
+     * @param {string} pOptions.zone - The zone the joystick will occupy. If there is already a controller of the traversal or static type, then you must use a zone. If there is only one controller no zone is needed. left | right This will give each controller equal space on the left / right sides of the screen.
+     * @param {number} pOptions.inactiveAlpha - The alpha value the joystick will be when it is considered to be inactive.
+     * @param {number} pOptions.transitionTime - How long it takes in ms to transition to the inactiveAlpha value.
+     * @param {number} pOptions.scale - The scale you want the joystick controller to be.
+     * @param {number} pOptions.plane - The plane of the joystick controller.
+     * @param {number} pOptions.layer - The layer of the joystick controller.
+     * @param {string} pOptions.atlasName - The atlasName of the joystick.
+     * @param {string} pOptions.joystickIconName - The iconName of the joystick.
+     * @param {string} pOptions.joyringIconName - The iconName of the joyring.
+     * @param {Object} pOptions.callback - An object holding options callbacks to attach to events the joystick emits. 
+     * pOptions.callback.onTapStart - Callback to be called when the joystick is touched after being released.
+     * pOptions.callback.onRelease - Callback to be called when the joystick is released and no longer held.
+     * pOptions.callback.onMove - Callback to be called when the joystick is moved.
+     * @param {Object} pOptions.callback.onMove - Callback to be called when the joystick is moved.
+     * @param {Function} pOptions.callback.onTapStart - Callback to be called when the joystick is touched after being released.
+     * @param {Function} pOptions.callback.onRelease - Callback to be called when the joystick is released and no longer held.
+     * @param {Function} pOptions.callback.onMove - Callback to be called when the joystick is moved.
+     */
+	build(pOptions = { &apos;type&apos;: &apos;stationary&apos;, &apos;size&apos;: 100, &apos;position&apos;: { &apos;x&apos;: 100, &apos;y&apos;: 100 }, &apos;lockedDimension&apos;: null, &apos;zone&apos;: null, &apos;inactiveAlpha&apos;: 0.5, &apos;transitionTime&apos;: 500, &apos;scale&apos;: 1, &apos;plane&apos;: 1, &apos;layer&apos;: 1, &apos;atlasName&apos;: &apos;&apos;, &apos;joystickIconName&apos;: &apos;&apos;, &apos;joyringIconName&apos;: &apos;&apos;, &apos;callback&apos;: { &apos;onTapStart&apos;: null, &apos;onRelease&apos;: null, &apos;onMove&apos;: null } }) {
+		if (!this.joyring &amp;&amp; !this.joystick) {
+			const joyring = VYLO.newDiob(&apos;Interface&apos;);
+			const joystick = VYLO.newDiob(&apos;Interface&apos;);
+			this.joyring = joyring;
+			this.joystick = joystick;
+		}
+		// pOptions.size is the size of the joyring, the inner ring will be 50% of this size.
+		// pOptions.position is the position for the joyring, the inner ring will be positioned inside.
+		if (!Number.isInteger(pOptions.size)) {
+			pOptions.size = 100;
+			// warning
+		}
+
+		// the type of the controller
+		if (typeof(pOptions.type) === &apos;string&apos;) {
+			if (pOptions.type !== &apos;traversal&apos; &amp;&amp; pOptions.type !== &apos;static&apos; &amp;&amp; pOptions.type !== &apos;stationary&apos;) {
+				pOptions.type = &apos;stationary&apos;;
+			}
+		} else {
+			pOptions.type = &apos;stationary&apos;;
+			// warning
+		}
+		
+		if (pOptions.type === &apos;traversal&apos; || pOptions.type === &apos;static&apos;) {
+			// if there is already a controller taking up a space, then you must use a zone. If there is no controller, then the entire screen is the zone
+			// do not define a zone if you know this controller will be the only controller on screen
+			if (MobileHandler.reservedScreenZones.length) {
+				if (!pOptions.zone || typeof(pOptions.zone) !== &apos;string&apos; || MobileHandler.reservedScreenZones.includes(pOptions.zone)) {
+					// Warning
+					MobileHandler.logger.prefix(&apos;MobileHandler-Module&apos;).error(&apos;When using a controller that is of the traversal type, or the static type. A zone is REQUIRED. Only two controllers of traversal or static or one of each can be used at a time. These controllers have to have opposing zones. Left | Right&apos;)
+					return;
+				}
+			}
+			if (pOptions.zone === &apos;left&apos; || pOptions.zone === &apos;right&apos;) {
+				MobileHandler.reservedScreenZones.push(pOptions.zone);
+				MobileHandler.zonedControllers[pOptions.zone] = this;
+				this.zone = pOptions.zone;
+			}
+		}
+
+		if (typeof(pOptions.atlasName) !== &apos;string&apos;) {
+			pOptions.atlasName = &apos;&apos;;
+			// warning
+		}
+
+		// if the type is traversal it cannot be locked
+		if (typeof(pOptions.lockedDimension) !== &apos;string&apos; || pOptions.type === &apos;traversal&apos; || (pOptions.lockedDimension !== &apos;both&apos; &amp;&amp; pOptions.lockedDimension !== &apos;vertical&apos; &amp;&amp; pOptions.lockedDimension !== &apos;horizontal&apos;)) {
+			pOptions.lockedDimension = null;
+			// warning
+		}
+
+		if (typeof(pOptions.joystickIconName) !== &apos;string&apos;) {
+			pOptions.joystickIconName = &apos;&apos;;
+			// warning
+		}
+
+		if (typeof(pOptions.joyringIconName) !== &apos;string&apos;) {
+			pOptions.joyringIconName = &apos;&apos;;
+			// warning
+		}
+
+		// the plane this controller will use
+		if (typeof(pOptions.transitionTime) !== &apos;number&apos;) {
+			pOptions.transitionTime = 500;
+		}
+
+		if (typeof(pOptions.inactiveAlpha) !== &apos;number&apos;) {
+			pOptions.inactiveAlpha = 0.5;
+		}
+
+		// Feature coming soon
+		if (!Number.isInteger(pOptions.scale)) {
+			pOptions.scale = 1;
+			// warning
+		}
+
+		if (typeof(pOptions.plane) !== &apos;number&apos;) {
+			pOptions.plane = 1;
+		}
+
+		if (typeof(pOptions.layer) !== &apos;number&apos;) {
+			pOptions.layer = 1;
+		}
+
+		if (pOptions.position.constructor === Object) {
+			if (!Number.isInteger(pOptions.position.x)) {
+				pOptions.position.x = 100;
+				// warning
+			}
+			if (!Number.isInteger(pOptions.position.y)) {
+				pOptions.position.y = 100;
+				// warning
+			}
+		} else {
+			pOptions.position = { &apos;x&apos;: 100, &apos;y&apos;: 100 };
+			// warning
+		}
+		this.options = pOptions;
+		this.setup();
+	}
+
+	get type() {
+		return this.options.type;
+	}
+
+	set type(pNewType) {
+		if (pNewType === &apos;stationary&apos;) {
+			this.options.type = pNewType;
+		}
+	}
+    /**
+     * Updates the controllers position with the latest information from touch events
+     * @private
+	 * @param {number} pX - The x position on the screen where the user tapped.
+	 * @param {number} pY - The y position on the screen where the user tapped.
+     * @param {boolean} pTouchStart - If this was the first time the joystick was touched.
+     * @returns 
+     */
+	update(pX, pY, pTouchStart) {
+		if (this.lockedDimension === &apos;both&apos;) return;
+		if (pTouchStart) {
+			this.handleTransition();
+			if (this.active) {
+				this.joyring.trackedTouches = [];
+			}
+			this.joyring.layer = MobileHandler.constructor.MAX_LAYER;
+			this.joystick.layer = MobileHandler.constructor.MAX_LAYER + 10;
+			this.active = true;
+		}
+		if (this.active) {
+			// traversal: spawns at the touch position and when dragged, follows the finger across the screen
+			// static: spawns at the touch position, cannot move from that location, just updates the joystick and will clamp at its limit
+			// stationary: cannot move from it&apos;s position at all, will just update the joystick and clamp it at its limit, can be pressed from anywhere on screen.
+
+			const touchPos = { &apos;x&apos;: pX - this.joystick.halfSize, &apos;y&apos;: pY - this.joystick.halfSize };
+			// start position is always the center of the joyring
+			let startPos;
+			// distance is how far away the joystick is from the start position
+			let distance;
+			// angle is the angle in degrees from the start position to the touched position
+			let angle;
+			// clampedDistance is the max distance allowed for the joystick to move
+			let clampedDistance;
+			// clampedPos is the position that was clamped when the joystick tried to go past it&apos;s clampedDistance
+			let clampedPos;
+
+			if (this.options.type === &apos;stationary&apos;) {
+				// this joystick is stationary therefore the start position is it&apos;s default position
+				startPos = this.joystick.originalPos;
+				// if a certain axis is locked, clamp that position to it&apos;s start position
+				if (this.lockedDimension === &apos;horizontal&apos;) {
+					touchPos.y = startPos.y;
+				} else if (this.lockedDimension === &apos;vertical&apos;) {
+					touchPos.x = startPos.x;
+				}
+				distance = Utils.getDistance(startPos, touchPos);
+				angle = Utils.getAngle(startPos, touchPos);
+				clampedDistance = Math.min(distance, this.joyring.halfSize);
+				clampedPos = Utils.calculateNewPositionFromDistanceAndAngle(startPos, clampedDistance, angle);
+				// set the position to the clamped position so that it is locked to it&apos;s clampedPos
+				this.joystick.setPos(clampedPos.x, clampedPos.y);
+			} else if (this.options.type === &apos;traversal&apos; || this.options.type === &apos;static&apos;) {
+				// Position the joystick centered to the position of where the screen was touched if this is the first time touching the joystick
+				if (pTouchStart) {
+					this.joystick.startPos = touchPos;
+					this.joyring.setPos(touchPos.x - this.joystick.halfSize, touchPos.y - this.joystick.halfSize);
+					this.joystick.setPos(touchPos.x, touchPos.y);
+					return;
+				}
+
+				if (this.options.type === &apos;traversal&apos;) {
+					// the start position for traversal is wherever you pressed on the screen originally
+					// the start position was set in the `pTouchStart` portion
+					distance = Utils.getDistance(this.joystick.startPos, touchPos);
+					angle = Utils.getAngle(this.joystick.startPos, touchPos);
+					clampedDistance = Math.min(distance, this.joyring.halfSize);
+					clampedPos = Utils.calculateNewPositionFromDistanceAndAngle(this.joystick.startPos, clampedDistance, angle);
+					// set the position to the position touched
+					this.joystick.setPos(touchPos.x, touchPos.y);
+					// update the parent to follow the child after it is placed
+					const parentAngle = Utils.getAngle(touchPos, this.joystick.startPos);
+					const parentClampedPos = Utils.calculateNewPositionFromDistanceAndAngle(touchPos, clampedDistance, parentAngle);
+					this.joyring.setPos(parentClampedPos.x - this.joystick.halfSize, parentClampedPos.y - this.joystick.halfSize);
+
+					// if the distance is greater that the clamped position then we need to update the start position of the joystick
+					if (distance &gt; clampedDistance) {
+						this.joystick.startPos.x = this.joyring.xPos + this.joystick.halfSize;
+						this.joystick.startPos.y = this.joyring.yPos + this.joystick.halfSize;
+					}
+				} else if (this.options.type === &apos;static&apos;) {
+					// the start position for static is wherever you pressed on the screen originally
+					// the start position set in the `pTouchStart` portion
+				// if a certain axis is locked, clamp that position to it&apos;s start position
+					if (this.lockedDimension === &apos;horizontal&apos;) {
+						touchPos.y = this.joystick.startPos.y;
+					} else if (this.lockedDimension === &apos;vertical&apos;) {
+						touchPos.x = this.joystick.startPos.x;
+					}
+					distance = Utils.getDistance(this.joystick.startPos, touchPos);
+					angle = Utils.getAngle(this.joystick.startPos, touchPos);
+					clampedDistance = Math.min(distance, this.joyring.halfSize);
+					clampedPos = Utils.calculateNewPositionFromDistanceAndAngle(this.joystick.startPos, clampedDistance, angle);
+					// set the position to the clamped position so that it is locked
+					this.joystick.setPos(clampedPos.x, clampedPos.y);
+				}
+			}
+
+			// set the angle point for reading (-1 is to convert it for use in an environment where up is down, and down is up)
+			this.joystick.anglePoint = Utils.convertRaWAngleToVyloCoords(angle);
+			// set the direction for reading
+			this.joystick.direction = Math.round(Math.abs(clampedDistance)) &lt; (this.joyring.halfSize / 8) ? &apos;none&apos; : Utils.getDirection(this.joystick.anglePoint);
+
+			if (this.onMove &amp;&amp; typeof(this.onMove) === &apos;function&apos;) {
+				this.onMove(VYLO.Client, this.joystick.anglePoint, this.joystick.direction);
+			}
+		}
+	}
+    /**
+     * API called when this joystick is released
+     * @private
+     */
+	release() {
+		if (this.lockedDimension === &apos;both&apos;) return;
+		this.reset(true);
+        // Reset the position to the default position
+		this.joyring.setPos(this.joyring.originalPos.x, this.joyring.originalPos.y);
+		this.joystick.setPos(this.joystick.originalPos.x, this.joystick.originalPos.y);
+		this.handleTransition(true);
+	}
+    /**
+     * Locks a joystick from moving in a certain dimension or both
+     * @param {string} pDimension - The dimension to lock. both | vertical | horizontal
+     */
+	lock(pDimension) {
+        if (pDimension) {
+            pDimension = pDimension.toLowerCase();
+        }
+		if (typeof(pDimension) === &apos;string&apos;) {
+			if (pDimension === &apos;horizontal&apos;) {
+				this.lockedDimension = &apos;horizontal&apos;;
+			} else if (pDimension === &apos;vertical&apos;) {
+				this.lockedDimension = &apos;vertical&apos;;
+			} else {
+				this.lockedDimension = &apos;both&apos;;
+			}
+		}
+	}
+    /**
+     * Unlocks the joystick from being locked in the passed dimension.
+     * @param {string} pDimension - The dimension to unlock. both | vertical | horizontal
+     */
+	unlock(pDimension) {
+        if (pDimension) {
+            pDimension = pDimension.toLowerCase();
+        }
+		if (typeof(pDimension) === &apos;string&apos;) {
+			if (pDimension === &apos;horizontal&apos;) {
+				if (this.lockedDimension === &apos;both&apos;) {
+					this.lockedDimension = &apos;vertical&apos;;
+				} else {
+					this.lockedDimension = null;
+				}
+			} else if (pDimension === &apos;vertical&apos;) {
+				if (this.lockedDimension === &apos;both&apos;) {
+					this.lockedDimension = &apos;horizontal&apos;;
+				} else {
+					this.lockedDimension = null;
+				}
+			} else {
+				this.lockedDimension = null;
+			}
+		}
+	}
+    /**
+     * Returns the components that make up this controller. Which are the joystick element, and the joyring element.
+     * @returns {Object} - An object containing references to the joytick and the joyring that makeup this controller.
+     */
+	getComponents() {
+		return { &apos;joystick&apos;: this.joystick, &apos;joyring&apos;: this.joyring };
+	}
+    /**
+     * Hides this controller
+     */
+	hide() {
+		this.joyring.hide();
+		this.joystick.hide();
+		this.reset(true);
+	}
+    /**
+     * Shows this controllers
+     */
+	show() {
+		this.joyring.setPos(this.joyring.originalPos.x, this.joyring.originalPos.y);
+		this.joystick.setPos(this.joystick.originalPos.x, this.joystick.originalPos.y);
+		this.joyring.show();
+		this.joystick.show();
+		this.handleTransition(true);
+	}
+}</code></pre>
+
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(1.1.0)</span><img src="./image/esdoc-logo-mini-black.png"></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>

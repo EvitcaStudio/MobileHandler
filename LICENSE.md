@@ -1,4 +1,4 @@
-EMobile is free software, available under the terms of a MIT style License.
+MobileHandler is free software, available under the terms of a MIT style License.
 
 Copyright (c) 2022 Evitca Studio
 
@@ -14,7 +14,7 @@ copies or substantial portions of the Software.
 
 This software cannot be sold by itself. It must be used in a project and the project itself can be sold. In the case it is not, you the "user" of this software are breaking the license and agreeing to forfeit its usage.
 
-Neither the name “EvitcaStudio” or "EMobile" nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
+Neither the name “EvitcaStudio” or "MobileHandler" nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
