@@ -1,5 +1,5 @@
 {
-  "version": "1.0.1",
+  "version": "1.1.1",
   "devDependencies": {
     "esdoc": "^1.1.0",
     "esdoc-ecmascript-proposal-plugin": "^1.0.0",
@@ -10,6 +10,9 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build-dist": "npx webpack && uglifyjs dist/mobile-handler.min.mjs -m -c --comments -o dist/mobile-handler.min.mjs && node version-handler.js && esdoc -c esdoc.json"
+    "build-dist": "npx webpack && uglifyjs dist/mobile-handler.min.mjs -m -c --comments -o dist/mobile-handler.min.mjs && node version-handler.js && esdoc -c esdoc.json",
+    "update-version-major": "npm version major && npm run build-dist",
+    "update-version-minor": "npm version minor && npm run build-dist",
+    "update-version-patch": "npm version patch && npm run build-dist"
   }
 }
