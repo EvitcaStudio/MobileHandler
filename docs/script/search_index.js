@@ -1,20 +1,20 @@
 window.esdocSearchIndex = [
   [
-    "./src/controller.mjs~controller",
+    "mobile-handler/src/controller.mjs~controller",
     "class/src/controller.mjs~Controller.html",
-    "<span>Controller</span> <span class=\"search-result-import-path\">./src/controller.mjs</span>",
+    "<span>Controller</span> <span class=\"search-result-import-path\">mobile-handler/src/controller.mjs</span>",
     "class"
   ],
   [
-    "./src/mobile-handler.mjs~mobilehandler",
+    "mobile-handler/src/mobile-handler.mjs~mobilehandler",
     "variable/index.html#static-variable-MobileHandler",
-    "<span>MobileHandler</span> <span class=\"search-result-import-path\">./src/mobile-handler.mjs</span>",
+    "<span>MobileHandler</span> <span class=\"search-result-import-path\">mobile-handler/src/mobile-handler.mjs</span>",
     "variable"
   ],
   [
-    "./src/mobile-handler.mjs~mobilehandlersingleton",
+    "mobile-handler/src/mobile-handler.mjs~mobilehandlersingleton",
     "class/src/mobile-handler.mjs~MobileHandlerSingleton.html",
-    "<span>MobileHandlerSingleton</span> <span class=\"search-result-import-path\">./src/mobile-handler.mjs</span>",
+    "<span>MobileHandlerSingleton</span> <span class=\"search-result-import-path\">mobile-handler/src/mobile-handler.mjs</span>",
     "class"
   ],
   [

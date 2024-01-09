@@ -1,5 +1,22 @@
 {
-  "version": "1.2.0",
+  "name": "mobile-handler",
+  "version": "1.0.0",
+  "description": "The MobileHandler module provides a user-friendly interface for game developers to integrate touch-based controls for their game characters on mobile devices. It offers features for creating a visual joystick on the screen and facilitates mobile device interaction, including accessing device information and triggering device vibrations.",
+  "main": "dist/mobile-handler.min.mjs",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "npx webpack && npm run build:minify && node add-version-script.js && node add-banner-script.js",
+    "build:minify": "uglifyjs dist/mobile-handler.min.mjs -m -c --comments -o dist/mobile-handler.min.mjs",
+    "build:prod": "npx webpack --mode production && npm run build:minify && node add-version-script.js && node add-banner-script.js && npm run build:docs",
+    "build:docs": "esdoc -c esdoc.json"
+  },
+  "keywords": [],
+  "author": "https://github.com/doubleactii",
+  "license": "SEE LICENSE IN LICENSE.md",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/EvitcaStudio/MobileHandler.git"
+  },
   "devDependencies": {
     "esdoc": "^1.1.0",
     "esdoc-ecmascript-proposal-plugin": "^1.0.0",
@@ -7,12 +24,5 @@
     "uglify-js": "^3.17.4",
     "webpack": "^5.89.0",
     "webpack-cli": "^5.1.4"
-  },
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build-dist": "npx webpack && uglifyjs dist/mobile-handler.min.mjs -m -c --comments -o dist/mobile-handler.min.mjs && node version-handler.js && esdoc -c esdoc.json",
-    "update-version-major": "npm version major && npm run build-dist",
-    "update-version-minor": "npm version minor && npm run build-dist",
-    "update-version-patch": "npm version patch && npm run build-dist"
   }
 }
