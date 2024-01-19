@@ -109,6 +109,27 @@ export class Controller {
 		VYLO.Client.addInterfaceElement(this.joystick, 'mobile-handler-interface', this.joystick.id);
         // Track this controller
 		MobileHandler.activeControllers.push(this);
+		if (!MobileHandler.eventsAttached) {
+			const interfaceCanvas = VYLO.Client.getInterfaceCanvas('mobile-handler-interface', this.joyring.id);
+			// Set the pointer events to be allowed.
+			interfaceCanvas.style.pointerEvents = 'auto';
+			interfaceCanvas.style.touchAction = 'auto';
+			// Put events on the canvas rather than the document
+			interfaceCanvas.addEventListener('touchstart', MobileHandler.handleStart.bind(MobileHandler), { 'passive': false });
+			interfaceCanvas.addEventListener('touchend', MobileHandler.handleEnd.bind(MobileHandler), { 'passive': false });
+			interfaceCanvas.addEventListener('touchcancel', MobileHandler.handleCancel.bind(MobileHandler), { 'passive': false });
+			interfaceCanvas.addEventListener('touchmove', MobileHandler.handleMove.bind(MobileHandler), { 'passive': false });
+		
+			// Prevent zooming and mobile gestures
+			interfaceCanvas.addEventListener('gesturestart', function(pEvent) {pEvent.preventDefault()}, { 'passive': false });
+			interfaceCanvas.addEventListener('gesturechange', function(pEvent) {pEvent.preventDefault()}, { 'passive': false });
+			/**
+			 * Whether events have been attached to the canvas. Only needs to be done once so this is a boolean checking if it has been done before.
+			 * @type {boolean}
+			 * @private
+			 */
+			MobileHandler.eventsAttached = true;
+		}
 		this.show();
 	}
     /**

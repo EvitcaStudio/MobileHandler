@@ -143,15 +143,6 @@ class MobileHandlerSingleton {
 		VYLO.Client.showInterface(&apos;mobile-handler-interface&apos;);
 		// Attach our window resize handler event to the onWindowResize event
 		Pulse.on(VYLO.Client, &apos;onWindowResize&apos;, this.windowResizeHandler.bind(this));
-		
-		document.addEventListener(&apos;touchstart&apos;, this.handleStart.bind(this), { &apos;passive&apos;: false });
-		document.addEventListener(&apos;touchend&apos;, this.handleEnd.bind(this), { &apos;passive&apos;: false });
-		document.addEventListener(&apos;touchcancel&apos;, this.handleCancel.bind(this), { &apos;passive&apos;: false });
-		document.addEventListener(&apos;touchmove&apos;, this.handleMove.bind(this), { &apos;passive&apos;: false });
-	
-		// Prevent zooming and mobile gestures
-		document.addEventListener(&apos;gesturestart&apos;, function(pEvent) {pEvent.preventDefault()}, { &apos;passive&apos;: false });
-		document.addEventListener(&apos;gesturechange&apos;, function(pEvent) {pEvent.preventDefault()}, { &apos;passive&apos;: false });
 	}
 	/**
 	 * Return the type of device.
