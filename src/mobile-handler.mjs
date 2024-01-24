@@ -256,7 +256,7 @@ class MobileHandlerSingleton {
 		let highestLayedMapDiob;
 
 		for (let i = 0; i < screenDiobs.length; i++) {
-			if (screenDiobs[i].touchOpacity || (screenDiobs[i].touchOpacity === undefined && screenDiobs[i].type !== 'Interface/EMobile/Joyring')) {
+			if (screenDiobs[i].touchOpacity || (screenDiobs[i].touchOpacity === undefined)) {
 				if (!highestLayeredScreenDiob) {
 					highestLayeredScreenDiob = screenDiobs[i];
 				}
