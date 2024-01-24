@@ -104,6 +104,20 @@ class MobileHandlerSingleton {
 		VYLO.Client.showInterface('mobile-handler-interface');
 		// Attach our window resize handler event to the onWindowResize event
 		Pulse.on(VYLO.Client, 'onWindowResize', this.windowResizeHandler.bind(this));
+		// Get reference to game canvas
+		const gameCanvas = document.getElementById('game_canvas');
+		// Set the pointer events to be allowed.
+		gameCanvas.style.pointerEvents = 'auto';
+		gameCanvas.style.touchAction = 'auto';
+		// Put events on the canvas rather than the document
+		gameCanvas.addEventListener('touchstart', this.handleStart.bind(this), { 'passive': false });
+		gameCanvas.addEventListener('touchend', this.handleEnd.bind(this), { 'passive': false });
+		gameCanvas.addEventListener('touchcancel', this.handleCancel.bind(this), { 'passive': false });
+		gameCanvas.addEventListener('touchmove', this.handleMove.bind(this), { 'passive': false });
+	
+		// Prevent zooming and mobile gestures
+		gameCanvas.addEventListener('gesturestart', function(pEvent) {pEvent.preventDefault()}, { 'passive': false });
+		gameCanvas.addEventListener('gesturechange', function(pEvent) {pEvent.preventDefault()}, { 'passive': false });
 
 		// Make a style element
 		const styleElement = document.createElement('style');

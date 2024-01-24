@@ -148,27 +148,6 @@ export class Controller {
 		VYLO.Client.addInterfaceElement(this.joystick, &apos;mobile-handler-interface&apos;, this.joystick.id);
         // Track this controller
 		MobileHandler.activeControllers.push(this);
-		if (!MobileHandler.eventsAttached) {
-			const interfaceCanvas = VYLO.Client.getInterfaceCanvas(&apos;mobile-handler-interface&apos;, this.joyring.id);
-			// Set the pointer events to be allowed.
-			interfaceCanvas.style.pointerEvents = &apos;auto&apos;;
-			interfaceCanvas.style.touchAction = &apos;auto&apos;;
-			// Put events on the canvas rather than the document
-			interfaceCanvas.addEventListener(&apos;touchstart&apos;, MobileHandler.handleStart.bind(MobileHandler), { &apos;passive&apos;: false });
-			interfaceCanvas.addEventListener(&apos;touchend&apos;, MobileHandler.handleEnd.bind(MobileHandler), { &apos;passive&apos;: false });
-			interfaceCanvas.addEventListener(&apos;touchcancel&apos;, MobileHandler.handleCancel.bind(MobileHandler), { &apos;passive&apos;: false });
-			interfaceCanvas.addEventListener(&apos;touchmove&apos;, MobileHandler.handleMove.bind(MobileHandler), { &apos;passive&apos;: false });
-		
-			// Prevent zooming and mobile gestures
-			interfaceCanvas.addEventListener(&apos;gesturestart&apos;, function(pEvent) {pEvent.preventDefault()}, { &apos;passive&apos;: false });
-			interfaceCanvas.addEventListener(&apos;gesturechange&apos;, function(pEvent) {pEvent.preventDefault()}, { &apos;passive&apos;: false });
-			/**
-			 * Whether events have been attached to the canvas. Only needs to be done once so this is a boolean checking if it has been done before.
-			 * @type {boolean}
-			 * @private
-			 */
-			MobileHandler.eventsAttached = true;
-		}
 		this.show();
 	}
     /**
