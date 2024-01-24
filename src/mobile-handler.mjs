@@ -102,68 +102,9 @@ class MobileHandlerSingleton {
 		// Create and show the mobile handler interface that our controllers will exist in
 		VYLO.Client.createInterface('mobile-handler-interface');
 		VYLO.Client.showInterface('mobile-handler-interface');
-		// Attach our window resize handler event to the onWindowResize event
-		Pulse.on(VYLO.Client, 'onWindowResize', this.windowResizeHandler.bind(this));
-		// Get reference to game canvas
-		const gameCanvas = document.getElementById('game_canvas');
-		// Set the pointer events to be allowed.
-		gameCanvas.style.pointerEvents = 'auto';
-		gameCanvas.style.touchAction = 'auto';
-		// Put events on the canvas rather than the document
-		gameCanvas.addEventListener('touchstart', this.handleStart.bind(this), { 'passive': false });
-		gameCanvas.addEventListener('touchend', this.handleEnd.bind(this), { 'passive': false });
-		gameCanvas.addEventListener('touchcancel', this.handleCancel.bind(this), { 'passive': false });
-		gameCanvas.addEventListener('touchmove', this.handleMove.bind(this), { 'passive': false });
-	
-		// Prevent zooming and mobile gestures
-		gameCanvas.addEventListener('gesturestart', function(pEvent) {pEvent.preventDefault()}, { 'passive': false });
-		gameCanvas.addEventListener('gesturechange', function(pEvent) {pEvent.preventDefault()}, { 'passive': false });
 
-		// Make a style element
-		const styleElement = document.createElement('style');
-
-		// Set the inset variables so we can reference them in JS
-		styleElement.textContent = `
-			:root {
-			--safe-area-inset-top: env(safe-area-inset-top);
-			--safe-area-inset-right: env(safe-area-inset-right);
-			--safe-area-inset-bottom: env(safe-area-inset-bottom);
-			--safe-area-inset-left: env(safe-area-inset-left);
-			}
-		`;
-
-		// Append the style element to the document head
-		document.head.appendChild(styleElement);
-
-        // Get the styles attached to the root element (we stored the env variables for the safe area);
-        const rootStyles = getComputedStyle(document.documentElement);
-
-        // Get the safe areas that were computed so we can store them for calculations for our UI
-        const safeAreaInsetTop = parseInt(rootStyles.getPropertyValue('--safe-area-inset-top').replace('px', ''));
-        const safeAreaInsetRight = parseInt(rootStyles.getPropertyValue('--safe-area-inset-right').replace('px', ''));
-        const safeAreaInsetBottom = parseInt(rootStyles.getPropertyValue('--safe-area-inset-bottom').replace('px', ''));
-        const safeAreaInsetLeft = parseInt(rootStyles.getPropertyValue('--safe-area-inset-left').replace('px', ''));
-
-		/**
-		 * An object containing the safe area offset values to account for the notch on notch enabled devices. This will keep the UI in a safe area
-		 * The safe-area-inset-* variables are four environment variables that define a rectangle by its top, right, bottom, and left insets from the edge of the viewport, 
-		 * which is safe to put content into without risking it being cut off by the shape of a non‑rectangular display. 
-		 * For rectangular viewports, like your average laptop monitor, their value is equal to zero. 
-		 * For non-rectangular displays — like a round watch face — the four values set by the user agent form a rectangle such that all content inside the rectangle is visible.
-		 * https://developer.mozilla.org/en-US/docs/Web/CSS/env
-		 * @private
-		 * @property {boolean} top - safeAreaInsetTop.
-		 * @property {boolean} right - safeAreaInsetRight.
-		 * @property {boolean} bottom - safeAreaInsetBottom.
-		 * @property {boolean} left - safeAreaInsetLeft.
-		 * @type {Object}
-		 */
-		this.safeAreaValues = {
-			top: safeAreaInsetTop,
-			right: safeAreaInsetRight,
-			bottom: safeAreaInsetBottom,
-			left: safeAreaInsetLeft
-		}
+		this.registerEventHandlers();
+		this.querySafeAreaValues();
 	}
 	/**
 	 * An object containing the safe area offset values to account for the notch on notch enabled devices. This will keep the UI in a safe area
@@ -339,6 +280,80 @@ class MobileHandlerSingleton {
 		return null;
 	}
 	/**
+	 * Sets the needed event handlers for this module.
+	 * @private
+	 */
+	registerEventHandlers() {
+		// Attach our window resize handler event to the onWindowResize event
+		Pulse.on(VYLO.Client, 'onWindowResize', this.windowResizeHandler.bind(this));
+		
+		// Get reference to game canvas
+		const gameCanvas = document.getElementById('game_canvas');
+		// Set the pointer events to be allowed.
+		gameCanvas.style.pointerEvents = 'auto';
+		gameCanvas.style.touchAction = 'auto';
+		// Put events on the canvas rather than the document
+		gameCanvas.addEventListener('touchstart', this.handleStart.bind(this), { 'passive': false });
+		gameCanvas.addEventListener('touchend', this.handleEnd.bind(this), { 'passive': false });
+		gameCanvas.addEventListener('touchcancel', this.handleCancel.bind(this), { 'passive': false });
+		gameCanvas.addEventListener('touchmove', this.handleMove.bind(this), { 'passive': false });
+	
+		// Prevent zooming and mobile gestures
+		gameCanvas.addEventListener('gesturestart', function(pEvent) {pEvent.preventDefault()}, { 'passive': false });
+		gameCanvas.addEventListener('gesturechange', function(pEvent) {pEvent.preventDefault()}, { 'passive': false });
+	}
+	/**
+	 * Queries the safe area inset values set by the device and stores them.
+	 * @private
+	 */
+	querySafeAreaValues() {
+		// Make a style element
+		const styleElement = document.createElement('style');
+
+		// Set the inset variables so we can reference them in JS
+		styleElement.textContent = `
+			:root {
+			--safe-area-inset-top: env(safe-area-inset-top);
+			--safe-area-inset-right: env(safe-area-inset-right);
+			--safe-area-inset-bottom: env(safe-area-inset-bottom);
+			--safe-area-inset-left: env(safe-area-inset-left);
+			}
+		`;
+
+		// Append the style element to the document head
+		document.head.appendChild(styleElement);
+
+        // Get the styles attached to the root element (we stored the env variables for the safe area);
+        const rootStyles = getComputedStyle(document.documentElement);
+
+        // Get the safe areas that were computed so we can store them for calculations for our UI
+        const safeAreaInsetTop = parseInt(rootStyles.getPropertyValue('--safe-area-inset-top').replace('px', ''));
+        const safeAreaInsetRight = parseInt(rootStyles.getPropertyValue('--safe-area-inset-right').replace('px', ''));
+        const safeAreaInsetBottom = parseInt(rootStyles.getPropertyValue('--safe-area-inset-bottom').replace('px', ''));
+        const safeAreaInsetLeft = parseInt(rootStyles.getPropertyValue('--safe-area-inset-left').replace('px', ''));
+
+		/**
+		 * An object containing the safe area offset values to account for the notch on notch enabled devices. This will keep the UI in a safe area
+		 * The safe-area-inset-* variables are four environment variables that define a rectangle by its top, right, bottom, and left insets from the edge of the viewport, 
+		 * which is safe to put content into without risking it being cut off by the shape of a non‑rectangular display. 
+		 * For rectangular viewports, like your average laptop monitor, their value is equal to zero. 
+		 * For non-rectangular displays — like a round watch face — the four values set by the user agent form a rectangle such that all content inside the rectangle is visible.
+		 * https://developer.mozilla.org/en-US/docs/Web/CSS/env
+		 * @private
+		 * @property {boolean} top - safeAreaInsetTop.
+		 * @property {boolean} right - safeAreaInsetRight.
+		 * @property {boolean} bottom - safeAreaInsetBottom.
+		 * @property {boolean} left - safeAreaInsetLeft.
+		 * @type {Object}
+		 */
+		this.safeAreaValues = {
+			top: safeAreaInsetTop,
+			right: safeAreaInsetRight,
+			bottom: safeAreaInsetBottom,
+			left: safeAreaInsetLeft
+		}
+	}
+	/**
 	 * Handles when a finger is placed onto the screen in a zone
 	 * @private
 	 * @param {number} pX - The x position on the screen where the user tapped.
@@ -351,7 +366,7 @@ class MobileHandlerSingleton {
 		if (this.reservedScreenZones.length) {
 			const rightZoneController = this.zonedControllers['right'];
 			const leftZoneController = this.zonedControllers['left'];
-			// if the screen is pressed on the right|left side and if the right|left zone controller is not active
+			// If the screen is pressed on the right|left side and if the right|left zone controller is not active
 			// or if the right|left zone controller is a traversal controller, then assign the finger ID to the controller
 			// and update it
 			// traversal controllers can update their tracked finger and position when another finger takes over
@@ -369,7 +384,7 @@ class MobileHandlerSingleton {
 				}
 			}
 		} else {
-			// if there are no established zones, and there is a static controller or a traversal controller created then those types of controllers can 
+			// If there are no established zones, and there is a static controller or a traversal controller created then those types of controllers can 
 			// use the entire screen as their zone. Only one of these controllers can control the entire screen. If more than one of these controllers are created then zones will be needed.
 			for (const controller of this.activeControllers) {
 				if ((!controller.activeInZone || controller.type === 'traversal') && (controller.type === 'traversal' || controller.type === 'static')) {
@@ -462,7 +477,6 @@ class MobileHandlerSingleton {
 			let spriteRelativeX;
 			let spriteRelativeY;
 			
-			// console.log(fingerID, 'start');
 			// 	If you haven't touched a diob, but instead just a space on a screen check if there are any zoned controllers
 			if (!touchedDiob) {
 				this.handleZoneTouch(x, y, fingerID);
@@ -479,7 +493,7 @@ class MobileHandlerSingleton {
 					touchedDiob._slidOff = false;
 				}
 				if (typeof(touchedDiob.onTapStart) === 'function') {
-					// if you are already touching something, you need `touchOpacity` set to 2 to use `multitouch`
+					// If you are already touching something, you need `touchOpacity` set to 2 to use `multitouch`
 					// If the element is an interface we need to use screen coords
 					if (touchedDiob.baseType === 'Interface') {
 						spriteRelativeX = Utils.clamp(touchX - touchedDiob.xPos, 0, touchedDiob.width);
@@ -494,7 +508,7 @@ class MobileHandlerSingleton {
 				}
 				if (touchedDiob.trackedTouches.length && touchedDiob.touchOpacity === MobileHandlerSingleton.MULTI_TOUCH) {
 					touchedDiob.trackedTouches.push(fingerID);
-				// if you do not have `multitouch` enabled, then you can only touch one thing at a time					
+				// If you do not have `multitouch` enabled, then you can only touch one thing at a time					
 				} else {
 					if (!touchedDiob.trackedTouches.length) {
 						touchedDiob.trackedTouches.push(fingerID);
@@ -554,6 +568,10 @@ class MobileHandlerSingleton {
 						spriteRelativeX = Utils.clamp(this.mapPositionObject.x - touchedDiob.xPos, 0, touchedDiob.width);
 						spriteRelativeY = Utils.clamp(this.mapPositionObject.y - touchedDiob.yPos, 0, touchedDiob.height);
 					}
+					/**
+					 * If multi touch is enabled then on tap end is called per finger that ends a touch and not just the initial finger that triggered the touch
+					 * If multi touch is not enabled then it only calls the onTapEnd event for the initial finger that triggered the touch
+					 */
 					if (touchedDiob.touchOpacity === MobileHandlerSingleton.MULTI_TOUCH) {
 						touchedDiob.onTapEnd(VYLO.Client, spriteRelativeX, spriteRelativeY, fingerID);
 					} else {
