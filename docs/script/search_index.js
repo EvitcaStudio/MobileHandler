@@ -504,6 +504,36 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/mobile-handler.mjs~mobilehandlersingleton#getsafeareabottom",
+    "class/src/mobile-handler.mjs~MobileHandlerSingleton.html#instance-method-getSafeAreaBottom",
+    "src/mobile-handler.mjs~MobileHandlerSingleton#getSafeAreaBottom",
+    "method"
+  ],
+  [
+    "src/mobile-handler.mjs~mobilehandlersingleton#getsafeareainsets",
+    "class/src/mobile-handler.mjs~MobileHandlerSingleton.html#instance-method-getSafeAreaInsets",
+    "src/mobile-handler.mjs~MobileHandlerSingleton#getSafeAreaInsets",
+    "method"
+  ],
+  [
+    "src/mobile-handler.mjs~mobilehandlersingleton#getsafearealeft",
+    "class/src/mobile-handler.mjs~MobileHandlerSingleton.html#instance-method-getSafeAreaLeft",
+    "src/mobile-handler.mjs~MobileHandlerSingleton#getSafeAreaLeft",
+    "method"
+  ],
+  [
+    "src/mobile-handler.mjs~mobilehandlersingleton#getsafearearight",
+    "class/src/mobile-handler.mjs~MobileHandlerSingleton.html#instance-method-getSafeAreaRight",
+    "src/mobile-handler.mjs~MobileHandlerSingleton#getSafeAreaRight",
+    "method"
+  ],
+  [
+    "src/mobile-handler.mjs~mobilehandlersingleton#getsafeareatop",
+    "class/src/mobile-handler.mjs~MobileHandlerSingleton.html#instance-method-getSafeAreaTop",
+    "src/mobile-handler.mjs~MobileHandlerSingleton#getSafeAreaTop",
+    "method"
+  ],
+  [
     "src/mobile-handler.mjs~mobilehandlersingleton#handlecancel",
     "class/src/mobile-handler.mjs~MobileHandlerSingleton.html#instance-method-handleCancel",
     "src/mobile-handler.mjs~MobileHandlerSingleton#handleCancel",
@@ -573,6 +603,12 @@ window.esdocSearchIndex = [
     "src/mobile-handler.mjs~mobilehandlersingleton#reservedscreenzones",
     "class/src/mobile-handler.mjs~MobileHandlerSingleton.html#instance-member-reservedScreenZones",
     "src/mobile-handler.mjs~MobileHandlerSingleton#reservedScreenZones",
+    "member"
+  ],
+  [
+    "src/mobile-handler.mjs~mobilehandlersingleton#safeareavalues",
+    "class/src/mobile-handler.mjs~MobileHandlerSingleton.html#instance-member-safeAreaValues",
+    "src/mobile-handler.mjs~MobileHandlerSingleton#safeAreaValues",
     "member"
   ],
   [

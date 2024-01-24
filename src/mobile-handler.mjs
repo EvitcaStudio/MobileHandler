@@ -104,6 +104,97 @@ class MobileHandlerSingleton {
 		VYLO.Client.showInterface('mobile-handler-interface');
 		// Attach our window resize handler event to the onWindowResize event
 		Pulse.on(VYLO.Client, 'onWindowResize', this.windowResizeHandler.bind(this));
+
+		// Make a style element
+		const styleElement = document.createElement('style');
+
+		// Set the inset variables so we can reference them in JS
+		styleElement.textContent = `
+			:root {
+			--safe-area-inset-top: env(safe-area-inset-top);
+			--safe-area-inset-right: env(safe-area-inset-right);
+			--safe-area-inset-bottom: env(safe-area-inset-bottom);
+			--safe-area-inset-left: env(safe-area-inset-left);
+			}
+		`;
+
+		// Append the style element to the document head
+		document.head.appendChild(styleElement);
+
+        // Get the styles attached to the root element (we stored the env variables for the safe area);
+        const rootStyles = getComputedStyle(document.documentElement);
+
+        // Get the safe areas that were computed so we can store them for calculations for our UI
+        const safeAreaInsetTop = parseInt(rootStyles.getPropertyValue('--safe-area-inset-top').replace('px', ''));
+        const safeAreaInsetRight = parseInt(rootStyles.getPropertyValue('--safe-area-inset-right').replace('px', ''));
+        const safeAreaInsetBottom = parseInt(rootStyles.getPropertyValue('--safe-area-inset-bottom').replace('px', ''));
+        const safeAreaInsetLeft = parseInt(rootStyles.getPropertyValue('--safe-area-inset-left').replace('px', ''));
+
+		/**
+		 * An object containing the safe area offset values to account for the notch on notch enabled devices. This will keep the UI in a safe area
+		 * The safe-area-inset-* variables are four environment variables that define a rectangle by its top, right, bottom, and left insets from the edge of the viewport, 
+		 * which is safe to put content into without risking it being cut off by the shape of a non‑rectangular display. 
+		 * For rectangular viewports, like your average laptop monitor, their value is equal to zero. 
+		 * For non-rectangular displays — like a round watch face — the four values set by the user agent form a rectangle such that all content inside the rectangle is visible.
+		 * https://developer.mozilla.org/en-US/docs/Web/CSS/env
+		 * @private
+		 * @property {boolean} top - safeAreaInsetTop.
+		 * @property {boolean} right - safeAreaInsetRight.
+		 * @property {boolean} bottom - safeAreaInsetBottom.
+		 * @property {boolean} left - safeAreaInsetLeft.
+		 * @type {Object}
+		 */
+		this.safeAreaValues = {
+			top: safeAreaInsetTop,
+			right: safeAreaInsetRight,
+			bottom: safeAreaInsetBottom,
+			left: safeAreaInsetLeft
+		}
+	}
+	/**
+	 * An object containing the safe area offset values to account for the notch on notch enabled devices. This will keep the UI in a safe area
+	 * The safe-area-inset-* variables are four environment variables that define a rectangle by its top, right, bottom, and left insets from the edge of the viewport, 
+	 * which is safe to put content into without risking it being cut off by the shape of a non‑rectangular display. 
+	 * For rectangular viewports, like your average laptop monitor, their value is equal to zero. 
+	 * For non-rectangular displays — like a round watch face — the four values set by the user agent form a rectangle such that all content inside the rectangle is visible.
+	 * https://developer.mozilla.org/en-US/docs/Web/CSS/env
+	 * @private
+	 * @property {boolean} top - safeAreaInsetTop.
+	 * @property {boolean} right - safeAreaInsetRight.
+	 * @property {boolean} bottom - safeAreaInsetBottom.
+	 * @property {boolean} left - safeAreaInsetLeft.
+	 * @returns {Object} The safe area inset values
+	 */
+	getSafeAreaInsets() {
+		return { ...this.safeAreaValues };
+	}
+	/**
+	 * Short hand for getting the safe area inset for the top of the screen.
+	 * @returns {number}
+	 */
+	getSafeAreaTop() {
+		return this.safeAreaValues.top;
+	}
+	/**
+	 * Short hand for getting the safe area inset for the bottom of the screen.
+	 * @returns {number}
+	 */
+	getSafeAreaBottom() {
+		return this.safeAreaValues.bottom;
+	}
+	/**
+	 * Short hand for getting the safe area inset for the left of the screen.
+	 * @returns {number}
+	 */
+	getSafeAreaLeft() {
+		return this.safeAreaValues.left;
+	}
+	/**
+	 * Short hand for getting the safe area inset for the right of the screen.
+	 * @returns {number}
+	 */
+	getSafeAreaRight() {
+		return this.safeAreaValues.right;
 	}
 	/**
 	 * Return the type of device.
