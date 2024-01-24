@@ -480,9 +480,11 @@ class MobileHandlerSingleton {
 				}
 				if (typeof(touchedDiob.onTapStart) === 'function') {
 					// if you are already touching something, you need `touchOpacity` set to 2 to use `multitouch`
+					// If the element is an interface we need to use screen coords
 					if (touchedDiob.baseType === 'Interface') {
 						spriteRelativeX = Utils.clamp(touchX - touchedDiob.xPos, 0, touchedDiob.width);
 						spriteRelativeY = Utils.clamp(touchY - touchedDiob.yPos, 0, touchedDiob.height);
+					// Otherwise it is a map element and we need to use map coordinates
 					} else {
 						VYLO.Client.getPosFromScreen(touchX, touchY, this.mapPositionObject);
 						spriteRelativeX = Utils.clamp(this.mapPositionObject.x - touchedDiob.xPos, 0, touchedDiob.width);
@@ -542,9 +544,11 @@ class MobileHandlerSingleton {
 		
 			if (touchedDiob) {
 				if (touchedDiob.onTapEnd && typeof(touchedDiob.onTapEnd) === 'function') {
+					// If the element is an interface we need to use screen coords
 					if (touchedDiob.baseType === 'Interface') {
 						spriteRelativeX = Utils.clamp(touchX - touchedDiob.xPos, 0, touchedDiob.width);
 						spriteRelativeY = Utils.clamp(touchY - touchedDiob.yPos, 0, touchedDiob.height);
+					// Otherwise it is a map element and we need to use map coordinates
 					} else {
 						VYLO.Client.getPosFromScreen(touchX, touchY, this.mapPositionObject);
 						spriteRelativeX = Utils.clamp(this.mapPositionObject.x - touchedDiob.xPos, 0, touchedDiob.width);
@@ -571,9 +575,11 @@ class MobileHandlerSingleton {
 						if (this.touchedDiobs[j].trackedTouches.includes(fingerID)) {
 							this.touchedDiobs[j].trackedTouches.splice(this.touchedDiobs[j].trackedTouches.indexOf(fingerID), 1);
 							if (this.touchedDiobs[j].onTapStop && typeof(this.touchedDiobs[j].onTapStop) === 'function') {
+								// If the element is an interface we need to use screen coords
 								if (this.touchedDiobs[j].baseType === 'Interface') {
 									spriteRelativeX = Utils.clamp(touchX - this.touchedDiobs[j].xPos, 0, this.touchedDiobs[j].width);
 									spriteRelativeY = Utils.clamp(touchY - this.touchedDiobs[j].yPos, 0, this.touchedDiobs[j].height);
+								// Otherwise it is a map element and we need to use map coordinates
 								} else {
 									VYLO.Client.getPosFromScreen(touchX, touchY, this.mapPositionObject);
 									spriteRelativeX = Utils.clamp(this.mapPositionObject.x - this.touchedDiobs[j].xPos, 0, this.touchedDiobs[j].width);
@@ -642,9 +648,11 @@ class MobileHandlerSingleton {
 
 			if (touchedDiob) {
 				if (typeof(touchedDiob.onTapMove) === 'function') {
+					// If the element is an interface we need to use screen coords
 					if (touchedDiob.baseType === 'Interface') {
 						spriteRelativeX = Utils.clamp(touchX - touchedDiob.xPos, 0, touchedDiob.width);
 						spriteRelativeY = Utils.clamp(touchY - touchedDiob.yPos, 0, touchedDiob.height);
+					// Otherwise it is a map element and we need to use map coordinates
 					} else {
 						VYLO.Client.getPosFromScreen(touchX, touchY, this.mapPositionObject);
 						spriteRelativeX = Utils.clamp(this.mapPositionObject.x - touchedDiob.xPos, 0, touchedDiob.width);
