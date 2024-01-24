@@ -486,9 +486,9 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/mobile-handler.mjs~mobilehandlersingleton#getdevice",
-    "class/src/mobile-handler.mjs~MobileHandlerSingleton.html#instance-method-getDevice",
-    "src/mobile-handler.mjs~MobileHandlerSingleton#getDevice",
+    "src/mobile-handler.mjs~mobilehandlersingleton#detectdevicetype",
+    "class/src/mobile-handler.mjs~MobileHandlerSingleton.html#instance-method-detectDeviceType",
+    "src/mobile-handler.mjs~MobileHandlerSingleton#detectDeviceType",
     "method"
   ],
   [
@@ -576,9 +576,51 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/mobile-handler.mjs~mobilehandlersingleton#isandroid",
+    "class/src/mobile-handler.mjs~MobileHandlerSingleton.html#instance-member-isAndroid",
+    "src/mobile-handler.mjs~MobileHandlerSingleton#isAndroid",
+    "member"
+  ],
+  [
+    "src/mobile-handler.mjs~mobilehandlersingleton#isandroiddevice",
+    "class/src/mobile-handler.mjs~MobileHandlerSingleton.html#instance-method-isAndroidDevice",
+    "src/mobile-handler.mjs~MobileHandlerSingleton#isAndroidDevice",
+    "method"
+  ],
+  [
+    "src/mobile-handler.mjs~mobilehandlersingleton#isios",
+    "class/src/mobile-handler.mjs~MobileHandlerSingleton.html#instance-member-isIOS",
+    "src/mobile-handler.mjs~MobileHandlerSingleton#isIOS",
+    "member"
+  ],
+  [
+    "src/mobile-handler.mjs~mobilehandlersingleton#isiosdevice",
+    "class/src/mobile-handler.mjs~MobileHandlerSingleton.html#instance-method-isIOSDevice",
+    "src/mobile-handler.mjs~MobileHandlerSingleton#isIOSDevice",
+    "method"
+  ],
+  [
     "src/mobile-handler.mjs~mobilehandlersingleton#ismobile",
     "class/src/mobile-handler.mjs~MobileHandlerSingleton.html#instance-member-isMobile",
     "src/mobile-handler.mjs~MobileHandlerSingleton#isMobile",
+    "member"
+  ],
+  [
+    "src/mobile-handler.mjs~mobilehandlersingleton#ismobiledevice",
+    "class/src/mobile-handler.mjs~MobileHandlerSingleton.html#instance-method-isMobileDevice",
+    "src/mobile-handler.mjs~MobileHandlerSingleton#isMobileDevice",
+    "method"
+  ],
+  [
+    "src/mobile-handler.mjs~mobilehandlersingleton#istouchdevice",
+    "class/src/mobile-handler.mjs~MobileHandlerSingleton.html#instance-method-isTouchDevice",
+    "src/mobile-handler.mjs~MobileHandlerSingleton#isTouchDevice",
+    "method"
+  ],
+  [
+    "src/mobile-handler.mjs~mobilehandlersingleton#istouchenabled",
+    "class/src/mobile-handler.mjs~MobileHandlerSingleton.html#instance-member-isTouchEnabled",
+    "src/mobile-handler.mjs~MobileHandlerSingleton#isTouchEnabled",
     "member"
   ],
   [
@@ -594,10 +636,28 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/mobile-handler.mjs~mobilehandlersingleton#querysafeareavalues",
+    "class/src/mobile-handler.mjs~MobileHandlerSingleton.html#instance-method-querySafeAreaValues",
+    "src/mobile-handler.mjs~MobileHandlerSingleton#querySafeAreaValues",
+    "method"
+  ],
+  [
+    "src/mobile-handler.mjs~mobilehandlersingleton#queryuseragent",
+    "class/src/mobile-handler.mjs~MobileHandlerSingleton.html#instance-method-queryUserAgent",
+    "src/mobile-handler.mjs~MobileHandlerSingleton#queryUserAgent",
+    "method"
+  ],
+  [
     "src/mobile-handler.mjs~mobilehandlersingleton#recycledcontrollers",
     "class/src/mobile-handler.mjs~MobileHandlerSingleton.html#instance-member-recycledControllers",
     "src/mobile-handler.mjs~MobileHandlerSingleton#recycledControllers",
     "member"
+  ],
+  [
+    "src/mobile-handler.mjs~mobilehandlersingleton#registereventhandlers",
+    "class/src/mobile-handler.mjs~MobileHandlerSingleton.html#instance-method-registerEventHandlers",
+    "src/mobile-handler.mjs~MobileHandlerSingleton#registerEventHandlers",
+    "method"
   ],
   [
     "src/mobile-handler.mjs~mobilehandlersingleton#reservedscreenzones",
