@@ -279,7 +279,7 @@ class MobileHandlerSingleton {
 			if (components.joystick.edgeLock) {
 				components.joystick.originalPos = { 'x': components.joystick.xPos, 'y': components.joystick.yPos };
 			}
-		}		
+		}
 	}
 	/**
 	 * Gets the instance that the user tapped if there was one.
@@ -450,8 +450,11 @@ class MobileHandlerSingleton {
 		const touches = pEvent.changedTouches;
 
 		for (let i = 0; i < touches.length; i++) {
-			const x = Math.floor((touches[i].clientX - mainM.xBodyPos)) / mainM.scaleWidth; // find a better way to calcuate this value instead of relying on the engine's variable
-			const y = Math.floor((touches[i].clientY - mainM.yBodyPos)) / mainM.scaleHeight; // find a better way to calcuate this value instead of relying on the engine's variable
+			const bodyRect = document.getElementById('game_body').getBoundingClientRect();
+			const xBodyPos = bodyRect.x;
+			const yBodyPos = bodyRect.y;
+			const x = Math.floor((touches[i].clientX - xBodyPos)) / mainM.scaleWidth; // find a better way to calcuate this value instead of relying on the engine's variable
+			const y = Math.floor((touches[i].clientY - yBodyPos)) / mainM.scaleHeight; // find a better way to calcuate this value instead of relying on the engine's variable
 			const touchX = touches[i].clientX;
 			const touchY = touches[i].clientY;
 			const touchedDiob = this.getDiobUnderFinger(touchX, touchY);
@@ -518,8 +521,11 @@ class MobileHandlerSingleton {
 		const touches = pEvent.changedTouches;
 
 		for (let i = 0; i < touches.length; i++) {
-			const x = Math.floor((touches[i].clientX - mainM.xBodyPos)) / mainM.scaleWidth; // find a better way to calcuate this value instead of relying on the engine's variable
-			const y = Math.floor((touches[i].clientY - mainM.yBodyPos)) / mainM.scaleHeight; // find a better way to calcuate this value instead of relying on the engine's variable
+			const bodyRect = document.getElementById('game_body').getBoundingClientRect();
+			const xBodyPos = bodyRect.x;
+			const yBodyPos = bodyRect.y;
+			const x = Math.floor((touches[i].clientX - xBodyPos)) / mainM.scaleWidth; // find a better way to calcuate this value instead of relying on the engine's variable
+			const y = Math.floor((touches[i].clientY - yBodyPos)) / mainM.scaleHeight; // find a better way to calcuate this value instead of relying on the engine's variable
 			const touchX = touches[i].clientX;
 			const touchY = touches[i].clientY;
 			const touchedDiob = this.getDiobUnderFinger(touchX, touchY);
@@ -616,8 +622,11 @@ class MobileHandlerSingleton {
 		const touches = pEvent.changedTouches;
 
 		for (let i = 0; i < touches.length; i++) {
-			const x = Math.floor((touches[i].clientX - mainM.xBodyPos)) / mainM.scaleWidth; // find a better way to calcuate this value instead of relying on the engine's variable
-			const y = Math.floor((touches[i].clientY - mainM.yBodyPos)) / mainM.scaleHeight; // find a better way to calcuate this value instead of relying on the engine's variable
+			const bodyRect = document.getElementById('game_body').getBoundingClientRect();
+			const xBodyPos = bodyRect.x;
+			const yBodyPos = bodyRect.y;
+			const x = Math.floor((touches[i].clientX - xBodyPos)) / mainM.scaleWidth; // find a better way to calcuate this value instead of relying on the engine's variable
+			const y = Math.floor((touches[i].clientY - yBodyPos)) / mainM.scaleHeight; // find a better way to calcuate this value instead of relying on the engine's variable
 			const touchX = touches[i].clientX;
 			const touchY = touches[i].clientY;
 			const touchedDiob = this.getDiobUnderFinger(touchX, touchY);
