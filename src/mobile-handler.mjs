@@ -57,7 +57,7 @@ class MobileHandlerSingleton {
 	 * @private
 	 * @type {Array}
 	 */
-	touchedDiobs = [];
+	touchedInstances = [];
 	/**
 	 * An object that stores the mapPosition over the screen
 	 * @private
@@ -82,6 +82,16 @@ class MobileHandlerSingleton {
 	 * @type {number}
 	 */
 	xCenterScreenPosition = this.windowSize.width / 2;
+	/**
+	 * Weakmap to track data belonging to instances used in this module.
+	 * @private
+	 * @type {WeakMap}
+	 */
+	instanceWeakMap = new WeakMap();
+	/**
+	 * The version of the module.
+	 */
+	version = "VERSION_REPLACE_ME";
 	constructor() {
         /** The logger module this module uses to log errors / logs
          * @private
@@ -193,8 +203,8 @@ class MobileHandlerSingleton {
 		return this.isAndroid;
 	}
 	/**
-	 * Gets the device's current RAM
-	 * @returns The device's current RAM
+	 * Gets the device's current RAM. Only works in a cordova environment.
+	 * @returns {number} The device's current RAM
 	 */
 	getDeviceRAM() {
 		if (typeof(navigator) !== 'undefined') {
@@ -203,7 +213,26 @@ class MobileHandlerSingleton {
 	}
 	/**
 	 * Creates a controller component with the passed options.
-	 * @param {Object} pOptions - Options to control how the controller component works.
+     * @param {Object} pOptions - The options of this controller.
+     * @param {string} pOptions.type - The way this controller will behave. stationary | traversal | static.
+     * @param {number} pOptions.size - The width/height of the joystick. The width & height of the joystick should be the same. The inner ring will be 50% of this size.
+     * @param {Object} pOptions.position - The initial position of the joystick.
+     * @param {string} pOptions.position.x - The initial x position of the joystick.
+     * @param {string} pOptions.position.y - The initial y position of the joystick.
+     * @param {string} pOptions.lockedDimension - The locked dimension of the joystick. both | vertical | horizontal. This is used to lock the joystick from moving in certain dimensions. If this joystick's type is traversal it cannot be locked.
+     * @param {string} pOptions.zone - The zone the joystick will occupy. If there is already a controller of the traversal or static type, then you must use a zone. If there is only one controller no zone is needed. left | right This will give each controller equal space on the left | right sides of the screen.
+     * @param {number} pOptions.inactiveAlpha - The alpha value the joystick will be when it is considered to be inactive.
+     * @param {number} pOptions.transitionTime - How long it takes in ms to transition to the inactiveAlpha value.
+     * @param {number} pOptions.scale - The scale you want the joystick controller to be.
+     * @param {number} pOptions.plane - The plane of the joystick controller.
+     * @param {number} pOptions.layer - The layer of the joystick controller.
+     * @param {string} pOptions.atlasName - The atlasName of the joystick.
+     * @param {string} pOptions.joystickIconName - The iconName of the joystick.
+     * @param {string} pOptions.joyringIconName - The iconName of the joyring.
+     * @param {Object} pOptions.callback - An object holding options callbacks to attach to events the joystick emits. 
+     * @param {Function} pOptions.callback.onTouchBegin - Callback to be called when the joystick is touched after being released.
+     * @param {Function} pOptions.callback.onRelease - Callback to be called when the joystick is released and no longer held.
+     * @param {Function} pOptions.callback.onMove - Callback to be called when the joystick is moved.
 	 * @returns {Controller} A new controller component
 	 */
 	createController(pOptions) {
@@ -227,10 +256,10 @@ class MobileHandlerSingleton {
 		for (const controller of this.activeControllers) {
 			const components = controller.getComponents();
 			if (components.joyring.edgeLock) {
-				components.joyring.originalPos = { 'x': components.joyring.xPos, 'y': components.joyring.yPos };
+				components.joyring.originalPos = { 'x': components.joyring.x, 'y': components.joyring.y };
 			}
 			if (components.joystick.edgeLock) {
-				components.joystick.originalPos = { 'x': components.joystick.xPos, 'y': components.joystick.yPos };
+				components.joystick.originalPos = { 'x': components.joystick.x, 'y': components.joystick.y };
 			}
 		}
 	}
@@ -300,19 +329,19 @@ class MobileHandlerSingleton {
 		Pulse.on(VYLO.Client, 'onWindowResize', this.windowResizeHandler.bind(this));
 		
 		// Get reference to game canvas
-		const gameCanvas = document.getElementById('game_canvas');
+		const gameBody = document.getElementById('game_body');
 		// Set the pointer events to be allowed.
-		gameCanvas.style.pointerEvents = 'auto';
-		gameCanvas.style.touchAction = 'auto';
+		// gameBody.style.pointerEvents = 'auto';
+		// gameBody.style.touchAction = 'auto';
 		// Put events on the canvas rather than the document
-		gameCanvas.addEventListener('touchstart', this.handleStart.bind(this), { 'passive': false });
-		gameCanvas.addEventListener('touchend', this.handleEnd.bind(this), { 'passive': false });
-		gameCanvas.addEventListener('touchcancel', this.handleCancel.bind(this), { 'passive': false });
-		gameCanvas.addEventListener('touchmove', this.handleMove.bind(this), { 'passive': false });
+		window.addEventListener('touchstart', this.handleStart.bind(this), { 'passive': false });
+		window.addEventListener('touchend', this.handleEnd.bind(this), { 'passive': false });
+		window.addEventListener('touchcancel', this.handleCancel.bind(this), { 'passive': false });
+		window.addEventListener('touchmove', this.handleMove.bind(this), { 'passive': false });
 	
 		// Prevent zooming and mobile gestures
-		gameCanvas.addEventListener('gesturestart', function(pEvent) {pEvent.preventDefault()}, { 'passive': false });
-		gameCanvas.addEventListener('gesturechange', function(pEvent) {pEvent.preventDefault()}, { 'passive': false });
+		window.addEventListener('gesturestart', function(pEvent) {pEvent.preventDefault()}, { 'passive': false });
+		window.addEventListener('gesturechange', function(pEvent) {pEvent.preventDefault()}, { 'passive': false });
 	}
 	/**
 	 * Queries the safe area inset values set by the device and stores them.
@@ -392,6 +421,43 @@ class MobileHandlerSingleton {
 		this.isMobile = this.detectDeviceType() === 'mobile' ? true : false;
 	}
 	/**
+	 * Starts internally tracking this instance.
+	 * @private
+	 * @param {Object} pTouchedInstance - The instance that needs to be tracked.
+	 */
+	track(pTouchedInstance) {
+		/**
+		 * Object storing information that is occuring on pTouchedInstance
+		 * @property {Array} trackedTouches - An array of finger IDs that are currently touching the instance
+		 * @property {boolean} slidOff - A boolean on whether 
+		 */
+		this.instanceWeakMap.set(pTouchedInstance, {
+			trackedTouches: [],
+			slidOff: false
+		});
+
+		this.touchedInstances.push(pTouchedInstance);
+	}
+	/**
+	 * Checks if the instance that was touched is being tracked internally.
+	 * @private
+	 * @param {Object} pTouchedInstance - The instance that needs to be tracked.
+	 * @return {boolean} Whether pTouchedInstance is being tracked.
+	 */
+	isTracking(pTouchedInstance) {
+		const isTracked = (this.instanceWeakMap.get(pTouchedInstance) && this.touchedInstances.includes(pTouchedInstance));
+		return isTracked;
+	}
+	/**
+	 * Returns the tracker object associated with pTouchedInstance if it exists.
+	 * @private
+	 * @param {Object} pTouchedInstance - The instance that needs to be tracked.
+	 * @returns {Object|void} The tracker object associated with pTouchedInstance if it exists. void if not.
+	 */
+	getTrackerObject(pTouchedInstance) {
+		return this.instanceWeakMap.get(pTouchedInstance);
+	}
+	/**
 	 * Handles when a finger is placed onto the screen in a zone
 	 * @private
 	 * @param {number} pX - The x position on the screen where the user tapped.
@@ -409,13 +475,13 @@ class MobileHandlerSingleton {
 			// and update it
 			// traversal controllers can update their tracked finger and position when another finger takes over
 			if (pX > this.xCenterScreenPosition && rightZoneController) {
-				if (!rightZoneController.activeInZone || rightZoneController.type === 'traversal') {
+				if (!rightZoneController.activeInZone || rightZoneController.getType() === 'traversal') {
 					rightZoneController.controllingFinger = pFingerID;
 					rightZoneController.activeInZone = true;
 					rightZoneController.update(pX, pY, true);
 				}
 			} else if (pX < this.xCenterScreenPosition && leftZoneController) {
-				if (!leftZoneController.activeInZone || leftZoneController.type === 'traversal') {
+				if (!leftZoneController.activeInZone || leftZoneController.getType() === 'traversal') {
 					leftZoneController.controllingFinger = pFingerID;
 					leftZoneController.activeInZone = true;
 					leftZoneController.update(pX, pY, true);
@@ -425,7 +491,8 @@ class MobileHandlerSingleton {
 			// If there are no established zones, and there is a static controller or a traversal controller created then those types of controllers can 
 			// use the entire screen as their zone. Only one of these controllers can control the entire screen. If more than one of these controllers are created then zones will be needed.
 			for (const controller of this.activeControllers) {
-				if ((!controller.activeInZone || controller.type === 'traversal') && (controller.type === 'traversal' || controller.type === 'static')) {
+				const controllerType = controller.getType();
+				if ((!controller.activeInZone || controllerType === 'traversal') && (controllerType === 'traversal' || controllerType === 'static')) {
 					controller.controllingFinger = pFingerID;
 					controller.activeInZone = true;
 					controller.update(pX, pY, true);
@@ -446,16 +513,15 @@ class MobileHandlerSingleton {
 			const leftZoneController = this.zonedControllers['left'];
 
 			if (rightZoneController && rightZoneController.controllingFinger === pFingerID && rightZoneController.activeInZone) {
-				// console.log('right zone controller released');
 				rightZoneController.release();
 			} else if (leftZoneController && leftZoneController.controllingFinger === pFingerID && leftZoneController.activeInZone) {
-				// console.log('left zone controller released');
 				leftZoneController.release();
 			}
 
 		} else {
 			for (const controller of this.activeControllers) {
-				if ((controller.type === 'traversal' || controller.type === 'static') && controller.activeInZone) {
+				const controllerType = controller.getType();
+				if ((controllerType === 'traversal' || controllerType === 'static') && controller.activeInZone) {
 					if (controller.controllingFinger === pFingerID) {
 						controller.release();
 						return;
@@ -483,7 +549,8 @@ class MobileHandlerSingleton {
 			}
 		} else {
 			for (const controller of this.activeControllers) {
-				if ((controller.type === 'traversal' || controller.type === 'static') && controller.activeInZone) {
+				const controllerType = controller.getType();
+				if ((controllerType === 'traversal' || controllerType === 'static') && controller.activeInZone) {
 					if (controller.controllingFinger === pFingerID) {
 						controller.update(pX, pY);
 					}
@@ -497,71 +564,95 @@ class MobileHandlerSingleton {
 	 * @param {Object} pEvent - Represents an event which takes place in the DOM.
 	 */
 	handleStart(pEvent) {
-		// Prevent browser default (dragging body around and zooming and etc)
-		pEvent.preventDefault();
-
 		const touches = pEvent.changedTouches;
+		const bodyRect = document.getElementById('game_body').getBoundingClientRect();
+		const xBodyPos = bodyRect.x;
+		const yBodyPos = bodyRect.y;
 
 		for (let i = 0; i < touches.length; i++) {
-			const bodyRect = document.getElementById('game_body').getBoundingClientRect();
-			const xBodyPos = bodyRect.x;
-			const yBodyPos = bodyRect.y;
-			const x = Math.floor((touches[i].clientX - xBodyPos)) / mainM.scaleWidth; // find a better way to calcuate this value instead of relying on the engine's variable
-			const y = Math.floor((touches[i].clientY - yBodyPos)) / mainM.scaleHeight; // find a better way to calcuate this value instead of relying on the engine's variable
 			const touchX = touches[i].clientX;
 			const touchY = touches[i].clientY;
-			const touchedDiob = this.getDiobUnderFinger(touchX, touchY);
+			const x = Math.floor((touchX - xBodyPos)) / mainM.scaleWidth; // find a better way to calcuate this value instead of relying on the engine's variable
+			const y = Math.floor((touchY - yBodyPos)) / mainM.scaleHeight; // find a better way to calcuate this value instead of relying on the engine's variable
+			const touchedInstance = this.getDiobUnderFinger(touchX, touchY);
 			const fingerID = touches[i].identifier;
-			let spriteRelativeX;
-			let spriteRelativeY;
 			
-			// 	If you haven't touched a diob, but instead just a space on a screen check if there are any zoned controllers
-			if (!touchedDiob) {
+			// 	If you haven't touched an instance, but instead just a space on a screen check if there are any zoned controllers
+			if (!touchedInstance) {
 				this.handleZoneTouch(x, y, fingerID);
 			}
-
-			if (typeof(VYLO.Client.onTapStart) === 'function') {
-				VYLO.Client.onTapStart(touchedDiob, Utils.clamp(touchX, 0, this.windowSize.width), Utils.clamp(touchY, 0, this.windowSize.height), fingerID);
+			/**
+			 * VYLO.Client event for onTouchBegin.
+			 * 
+			 * VYLO.Client.onTouchBegin is an event function that handles a touch being registered on the screen at the global level.
+			 * @param {Object} pInstance - The instance touched.
+			 * @param {number} pX - The x position on the screen that was touched.
+			 * @param {number} pY - The y position on the screen that was touched.
+			 * @param {number} pFingerID - The ID of the finger that registered this touch.
+			 */
+			if (typeof(VYLO.Client.onTouchBegin) === 'function') {
+				VYLO.Client.onTouchBegin(touchedInstance, Utils.clamp(touchX, 0, this.windowSize.width), Utils.clamp(touchY, 0, this.windowSize.height), fingerID);
 			}
-			if (touchedDiob) {
-				if (touchedDiob.trackedTouches === undefined) {
-					touchedDiob.trackedTouches = [];
+
+			// If a instance was touched we need to handle separate logic
+			if (touchedInstance) {
+				// If we are not tracking this instance then we track it
+				if (!this.isTracking(touchedInstance)) {
+					this.track(touchedInstance);
 				}
-				if (touchedDiob._slidOff === undefined) {
-					touchedDiob._slidOff = false;
-				}
-				if (typeof(touchedDiob.onTapStart) === 'function') {
+				// Get a reference to the tracker object associated with this instance that was touched
+				const touchedInstanceTracker = this.getTrackerObject(touchedInstance);
+				/**
+				 * touchedInstance event for onTouchBegin.
+				 * 
+				 * touchedInstance.onTouchBegin is an event function that handles a touch being registered on the screen on this specific instance.
+				 * @param {Client} pClient - The client of the game.
+				 * @param {number} pX - The x position on the screen that was touched.
+				 * @param {number} pY - The y position on the screen that was touched.
+				 * @param {number} pFingerID - The ID of the finger that registered this touch.
+				 */
+				if (typeof(touchedInstance.onTouchBegin) === 'function') {
+					/**
+					 * The relative x position on the sprite
+					 * @type {number}
+					 */
+					let spriteRelativeX;
+					/**
+					 * The relative y position on the sprite
+					 * @type {number}
+					 */
+					let spriteRelativeY;
 					// If you are already touching something, you need `touchOpacity` set to 2 to use `multitouch`
 					// If the element is an interface we need to use screen coords
-					if (touchedDiob.baseType === 'Interface') {
-						spriteRelativeX = Utils.clamp(touchX - touchedDiob.xPos, 0, touchedDiob.width);
-						spriteRelativeY = Utils.clamp(touchY - touchedDiob.yPos, 0, touchedDiob.height);
+					if (touchedInstance.baseType === 'Interface') {
+						spriteRelativeX = Utils.clamp(touchX - touchedInstance.x, 0, touchedInstance.width);
+						spriteRelativeY = Utils.clamp(touchY - touchedInstance.y, 0, touchedInstance.height);
 					// Otherwise it is a map element and we need to use map coordinates
 					} else {
 						VYLO.Client.getPosFromScreen(touchX, touchY, this.mapPositionObject);
-						spriteRelativeX = Utils.clamp(this.mapPositionObject.x - touchedDiob.xPos, 0, touchedDiob.width);
-						spriteRelativeY = Utils.clamp(this.mapPositionObject.y - touchedDiob.yPos, 0, touchedDiob.height);
+						spriteRelativeX = Utils.clamp(this.mapPositionObject.x - touchedInstance.x, 0, touchedInstance.width);
+						spriteRelativeY = Utils.clamp(this.mapPositionObject.y - touchedInstance.y, 0, touchedInstance.height);
 					}
-					touchedDiob.onTapStart(VYLO.Client, spriteRelativeX, spriteRelativeY, fingerID);
+					touchedInstance.onTouchBegin(VYLO.Client, spriteRelativeX, spriteRelativeY, fingerID);
 				}
-				if (touchedDiob.trackedTouches.length && touchedDiob.touchOpacity === MobileHandlerSingleton.MULTI_TOUCH) {
-					touchedDiob.trackedTouches.push(fingerID);
+				if (touchedInstance.touchOpacity === MobileHandlerSingleton.MULTI_TOUCH) {
+					touchedInstanceTracker.trackedTouches.push(fingerID);
 				// If you do not have `multitouch` enabled, then you can only touch one thing at a time					
-				} else {
-					if (!touchedDiob.trackedTouches.length) {
-						touchedDiob.trackedTouches.push(fingerID);
-					}
+				} else if (!touchedInstanceTracker.trackedTouches.length) {
+					touchedInstanceTracker.trackedTouches.push(fingerID);
 				}
-				if (touchedDiob.isMobileHandlerController) {
-					const joyring = touchedDiob;
+				// Check if the instance that was touched was a mobile controller that is controlled by this module
+				if (touchedInstance.isMobileHandlerController) {
+					const joyring = touchedInstance;
 					joyring.controller.update(x, y, true);
-				}
-
-				if (!this.touchedDiobs.includes(touchedDiob)) {
-					this.touchedDiobs.push(touchedDiob);
 				}
 			}
 		}
+		if (pEvent.target.closest('.web_box') || pEvent.target.matches('.web_box')) {
+			return;
+		}
+		// Prevent browser default (dragging body around and zooming and etc)
+		pEvent.preventDefault();
 	}
 	/**
 	 * The event function called when a touch ends.
@@ -569,91 +660,134 @@ class MobileHandlerSingleton {
 	 * @param {Object} pEvent - Represents an event which takes place in the DOM.
 	 */
 	handleEnd(pEvent) {
-		// Prevent browser default (dragging body around and zooming and etc)
-		pEvent.preventDefault();
-
 		const touches = pEvent.changedTouches;
 
 		for (let i = 0; i < touches.length; i++) {
-			const bodyRect = document.getElementById('game_body').getBoundingClientRect();
-			const xBodyPos = bodyRect.x;
-			const yBodyPos = bodyRect.y;
-			const x = Math.floor((touches[i].clientX - xBodyPos)) / mainM.scaleWidth; // find a better way to calcuate this value instead of relying on the engine's variable
-			const y = Math.floor((touches[i].clientY - yBodyPos)) / mainM.scaleHeight; // find a better way to calcuate this value instead of relying on the engine's variable
 			const touchX = touches[i].clientX;
 			const touchY = touches[i].clientY;
-			const touchedDiob = this.getDiobUnderFinger(touchX, touchY);
+			const touchedInstance = this.getDiobUnderFinger(touchX, touchY);
 			const fingerID = touches[i].identifier;
+			/**
+			 * The relative x position on the sprite
+			 * @type {number}
+			 */
 			let spriteRelativeX;
+			/**
+			 * The relative y position on the sprite
+			 * @type {number}
+			 */
 			let spriteRelativeY;
-
-			// console.log(fingerID, 'end');
-			this.handleZoneRelease(fingerID);
 			
-			if (VYLO.Client.onTapEnd && typeof(VYLO.Client.onTapEnd) === 'function') {
-				VYLO.Client.onTapEnd(touchedDiob, Utils.clamp(touchX, 0, this.windowSize.width), Utils.clamp(touchY, 0, this.windowSize.height), touches[i].identifier);
+			// You are removing the finger matching fingerID from the screen, so we need to handle the zone being released by that finger if applicable
+			this.handleZoneRelease(fingerID);
+			/**
+			 * VYLO.Client event for onTouchFinish.
+			 * 
+			 * VYLO.Client.onTouchFinish is an event function that handles a touch being deregistered on the screen at the global level.
+			 * @param {Object} pInstance - The instance that was touched when the finger left the screen.
+			 * @param {number} pX - The x position on the screen that was touched.
+			 * @param {number} pY - The y position on the screen that was touched.
+			 * @param {number} pFingerID - The ID of the finger that registered this touch.
+			 */
+			if (typeof(VYLO.Client.onTouchFinish) === 'function') {
+				VYLO.Client.onTouchFinish(touchedInstance, Utils.clamp(touchX, 0, this.windowSize.width), Utils.clamp(touchY, 0, this.windowSize.height), fingerID);
 			}
 		
-			if (touchedDiob) {
-				if (touchedDiob.onTapEnd && typeof(touchedDiob.onTapEnd) === 'function') {
+			if (touchedInstance) {
+				// If we are not tracking this instance then we track it
+				if (!this.isTracking(touchedInstance)) {
+					this.track(touchedInstance);
+				}
+				// Get a reference to the tracker object associated with this instance that was touched
+				const touchedInstanceTracker = this.getTrackerObject(touchedInstance);
+				/**
+				 * touchedInstance event for onTouchFinish.
+				 * 
+				 * touchedInstance.onTouchFinish is an event function that fires when a finger is removed from the screen but originated on this instance and ended on this instance.
+				 * @param {Object} pClient - The client of the game.
+				 * @param {number} pX - The x position on the screen that was touched.
+				 * @param {number} pY - The y position on the screen that was touched.
+				 * @param {number} pFingerID - The ID of the finger that registered this touch.
+				 */
+				if (typeof(touchedInstance.onTouchFinish) === 'function') {
 					// If the element is an interface we need to use screen coords
-					if (touchedDiob.baseType === 'Interface') {
-						spriteRelativeX = Utils.clamp(touchX - touchedDiob.xPos, 0, touchedDiob.width);
-						spriteRelativeY = Utils.clamp(touchY - touchedDiob.yPos, 0, touchedDiob.height);
+					if (touchedInstance.baseType === 'Interface') {
+						spriteRelativeX = Utils.clamp(touchX - touchedInstance.x, 0, touchedInstance.width);
+						spriteRelativeY = Utils.clamp(touchY - touchedInstance.y, 0, touchedInstance.height);
 					// Otherwise it is a map element and we need to use map coordinates
 					} else {
 						VYLO.Client.getPosFromScreen(touchX, touchY, this.mapPositionObject);
-						spriteRelativeX = Utils.clamp(this.mapPositionObject.x - touchedDiob.xPos, 0, touchedDiob.width);
-						spriteRelativeY = Utils.clamp(this.mapPositionObject.y - touchedDiob.yPos, 0, touchedDiob.height);
+						spriteRelativeX = Utils.clamp(this.mapPositionObject.x - touchedInstance.x, 0, touchedInstance.width);
+						spriteRelativeY = Utils.clamp(this.mapPositionObject.y - touchedInstance.y, 0, touchedInstance.height);
 					}
 					/**
 					 * If multi touch is enabled then on tap end is called per finger that ends a touch and not just the initial finger that triggered the touch
-					 * If multi touch is not enabled then it only calls the onTapEnd event for the initial finger that triggered the touch
+					 * If multi touch is not enabled then it only calls the onTouchFinish event for the initial finger that triggered the touch
 					 */
-					if (touchedDiob.touchOpacity === MobileHandlerSingleton.MULTI_TOUCH) {
-						touchedDiob.onTapEnd(VYLO.Client, spriteRelativeX, spriteRelativeY, fingerID);
-					} else {
-						if (touchedDiob.trackedTouches) {
-							if (touchedDiob.trackedTouches.length) {
-								if (touchedDiob.trackedTouches.includes(fingerID)) {
-									touchedDiob.onTapEnd(VYLO.Client, spriteRelativeX, spriteRelativeY, fingerID);
-								}
-							}
-						}
+					if (touchedInstance.touchOpacity === MobileHandlerSingleton.MULTI_TOUCH) {
+						touchedInstance.onTouchFinish(VYLO.Client, spriteRelativeX, spriteRelativeY, fingerID);
+					} else if (touchedInstanceTracker.trackedTouches.includes(fingerID)) {
+						touchedInstance.onTouchFinish(VYLO.Client, spriteRelativeX, spriteRelativeY, fingerID);
 					}
 				}
 			}
 
-			// find all diobs that you were touching, and call `onTapStop` on them, since the finger that touched them has been removed
-			for (let j = this.touchedDiobs.length - 1; j >= 0; j--) {
-				if (this.touchedDiobs[j].trackedTouches) {
-					if (this.touchedDiobs[j].trackedTouches.length) {
-						if (this.touchedDiobs[j].trackedTouches.includes(fingerID)) {
-							this.touchedDiobs[j].trackedTouches.splice(this.touchedDiobs[j].trackedTouches.indexOf(fingerID), 1);
-							if (this.touchedDiobs[j].onTapStop && typeof(this.touchedDiobs[j].onTapStop) === 'function') {
-								// If the element is an interface we need to use screen coords
-								if (this.touchedDiobs[j].baseType === 'Interface') {
-									spriteRelativeX = Utils.clamp(touchX - this.touchedDiobs[j].xPos, 0, this.touchedDiobs[j].width);
-									spriteRelativeY = Utils.clamp(touchY - this.touchedDiobs[j].yPos, 0, this.touchedDiobs[j].height);
-								// Otherwise it is a map element and we need to use map coordinates
-								} else {
-									VYLO.Client.getPosFromScreen(touchX, touchY, this.mapPositionObject);
-									spriteRelativeX = Utils.clamp(this.mapPositionObject.x - this.touchedDiobs[j].xPos, 0, this.touchedDiobs[j].width);
-									spriteRelativeY = Utils.clamp(this.mapPositionObject.y - this.touchedDiobs[j].yPos, 0, this.touchedDiobs[j].height);
-								}
-								this.touchedDiobs[j].onTapStop(VYLO.Client, spriteRelativeX, spriteRelativeY, fingerID); // you tapped this diob, and finally released it (no matter if it was over the diob or not)
-							}
-							if (this.touchedDiobs[j]._slidOff) {
-								this.touchedDiobs[j]._slidOff = false;
-							}
-							if (this.touchedDiobs[j].isMobileHandlerController) {
-								const joyring = this.touchedDiobs[j];
-								if (!joyring.trackedTouches.length) {
-									joyring.controller.release();
-								}
-							}
-							this.touchedDiobs.splice(j, 1);
+			// Find all diobs that you were touching, and call `onTouchTerminate` on them, since the finger that touched them has been removed
+			for (let j = this.touchedInstances.length - 1; j >= 0; j--) {
+				// Get the touched instance
+				const touchedInstance = this.touchedInstances[j];
+				// If we are not tracking this instance then we track it
+				if (!this.isTracking(touchedInstance)) {
+					this.track(touchedInstance);
+				}
+				// Get the touched instances tracker
+				const touchedInstanceTracker = this.getTrackerObject(touchedInstance);
+				// Logic to check if this finger exists in this tracker
+				if (touchedInstanceTracker.trackedTouches.includes(fingerID)) {
+					// Remove this finger from being tracked
+					touchedInstanceTracker.trackedTouches.splice(touchedInstanceTracker.trackedTouches.indexOf(fingerID), 1);
+					/**
+					 * touchedInstance event for onTouchTerminate.
+					 * 
+					 * touchedInstance.onTouchTerminate is an event function that fires when a finger is removed from the screen but originated on this instance but doesn't matter where the finger ended (whether it was over this instance or not).
+					 * @param {Object} pClient - The client of the game.
+					 * @param {number} pX - The x position on the screen that was touched.
+					 * @param {number} pY - The y position on the screen that was touched.
+					 * @param {number} pFingerID - The ID of the finger that registered this touch.
+					 */
+					if (typeof(touchedInstance.onTouchTerminate) === 'function') {
+						// If the element is an interface we need to use screen coords
+						if (touchedInstance.baseType === 'Interface') {
+							spriteRelativeX = Utils.clamp(touchX - touchedInstance.x, 0, touchedInstance.width);
+							spriteRelativeY = Utils.clamp(touchY - touchedInstance.y, 0, touchedInstance.height);
+						// Otherwise it is a map element and we need to use map coordinates
+						} else {
+							VYLO.Client.getPosFromScreen(touchX, touchY, this.mapPositionObject);
+							spriteRelativeX = Utils.clamp(this.mapPositionObject.x - touchedInstance.x, 0, touchedInstance.width);
+							spriteRelativeY = Utils.clamp(this.mapPositionObject.y - touchedInstance.y, 0, touchedInstance.height);
 						}
+						touchedInstance.onTouchTerminate(VYLO.Client, spriteRelativeX, spriteRelativeY, fingerID); // you tapped this instance, and finally released it (no matter if it was over the instance or not)
+					}
+					// Reset the slidOff variable as the finger has been released from the screen
+					if (touchedInstanceTracker.slidOff) {
+						touchedInstanceTracker.slidOff = false;
+					}
+
+					// Check if this instance is a mobile controller handled by this module so that the release API can be called
+					if (touchedInstance.isMobileHandlerController) {
+						const joyring = touchedInstance;
+						// We removed this finger from the tracker earlier, so if this was the last finger on the joyring then release it
+						if (!touchedInstanceTracker.trackedTouches.length) {
+							joyring.controller.release();
+						}
+					}
+					/**
+					 * @todo Test this
+					 */
+					// If there are no more fingers touching this instance then we remove this instance from being considered to be touched.
+					if (!touchedInstanceTracker.trackedTouches.length) {
+						// Remove this instance from being tracked as touched
+						this.touchedInstances.splice(j, 1);
 					}
 				}
 			}
@@ -666,10 +800,16 @@ class MobileHandlerSingleton {
 	 */
 	handleCancel(pEvent) {
 		this.handleEnd(pEvent);
-		// remove all touchedDiobs since this was a touchCancel event, you must of hit some UI, meaning all fingers should be considered null and void
-		for (let j = this.touchedDiobs.length - 1; j >= 0; j--) {
-			this.touchedDiobs[j].trackedTouches = [];
-			this.touchedDiobs.splice(j, 1);
+		if (typeof(VYLO.Client.onTouchAbort) === 'function') {
+			VYLO.Client.onTouchAbort();
+		}
+		// Remove all touchedInstances since this was a touchCancel event, you must of hit some UI, meaning all fingers should be considered null and void
+		for (let j = this.touchedInstances.length - 1; j >= 0; j--) {
+			const instance = this.touchedInstances[j];
+			// Get a reference to the tracker object associated with this instance that was touched
+			const touchedInstanceTracker = this.getTrackerObject(instance);
+			touchedInstanceTracker.trackedTouches = [];
+			this.touchedInstances.splice(j, 1);
 		}
 	}
 	/**
@@ -678,76 +818,115 @@ class MobileHandlerSingleton {
 	 * @param {Object} pEvent - Represents an event which takes place in the DOM.
 	 */
 	handleMove(pEvent) {
-		// Prevent browser default (dragging body around and zooming and etc)
-		pEvent.preventDefault();
-
 		const touches = pEvent.changedTouches;
+		const bodyRect = document.getElementById('game_body').getBoundingClientRect();
+		const xBodyPos = bodyRect.x;
+		const yBodyPos = bodyRect.y;
 
 		for (let i = 0; i < touches.length; i++) {
-			const bodyRect = document.getElementById('game_body').getBoundingClientRect();
-			const xBodyPos = bodyRect.x;
-			const yBodyPos = bodyRect.y;
-			const x = Math.floor((touches[i].clientX - xBodyPos)) / mainM.scaleWidth; // find a better way to calcuate this value instead of relying on the engine's variable
-			const y = Math.floor((touches[i].clientY - yBodyPos)) / mainM.scaleHeight; // find a better way to calcuate this value instead of relying on the engine's variable
 			const touchX = touches[i].clientX;
 			const touchY = touches[i].clientY;
-			const touchedDiob = this.getDiobUnderFinger(touchX, touchY);
+			const x = Math.floor((touchX - xBodyPos)) / mainM.scaleWidth; // find a better way to calcuate this value instead of relying on the engine's variable
+			const y = Math.floor((touchY - yBodyPos)) / mainM.scaleHeight; // find a better way to calcuate this value instead of relying on the engine's variable
+			const touchedInstance = this.getDiobUnderFinger(touchX, touchY);
 			const fingerID = touches[i].identifier;
+			/**
+			 * The relative x position on the sprite
+			 * @type {number}
+			 */
 			let spriteRelativeX;
+			/**
+			 * The relative y position on the sprite
+			 * @type {number}
+			 */
 			let spriteRelativeY;
 			
+			// When a finger moves on the screen we need to update the zones for the mobile controllers
 			this.handleZoneMove(x, y, fingerID);
 
-			if (typeof(VYLO.Client.onTapMove) === 'function') {
-				VYLO.Client.onTapMove(touchedDiob, Utils.clamp(touchX, 0, this.windowSize.width), Utils.clamp(touchY, 0, this.windowSize.height), fingerID);
+			/**
+			 * VYLO.Client event for onTouchMoveUpdate.
+			 * 
+			 * VYLO.Client.onTouchMoveUpdate is an event function that fires when a finger is moved on the screen on the global level.
+			 * @param {Object} pInstance - The instance that was touched when the finger moved on the screen.
+			 * @param {number} pX - The x position on the screen that was touched.
+			 * @param {number} pY - The y position on the screen that was touched.
+			 * @param {number} pFingerID - The ID of the finger that registered this touch.
+			 */
+			if (typeof(VYLO.Client.onTouchMoveUpdate) === 'function') {
+				VYLO.Client.onTouchMoveUpdate(touchedInstance, Utils.clamp(touchX, 0, this.windowSize.width), Utils.clamp(touchY, 0, this.windowSize.height), fingerID);
 			}
 
-			if (touchedDiob) {
-				if (typeof(touchedDiob.onTapMove) === 'function') {
+			if (touchedInstance) {
+				// If we are not tracking this instance then we track it
+				if (!this.isTracking(touchedInstance)) {
+					this.track(touchedInstance);
+				}
+				// Get a reference to the tracker object associated with this instance that was touched
+				const touchedInstanceTracker = this.getTrackerObject(touchedInstance);
+				/**
+				 * touchedInstance event for onTouchMoveUpdate.
+				 * 
+				 * touchedInstance.onTouchMoveUpdate is an event function that fires when a finger is moved on the screen.
+				 * @param {Object} pClient - The client of the game.
+				 * @param {number} pX - The x position on the screen that was touched.
+				 * @param {number} pY - The y position on the screen that was touched.
+				 * @param {number} pFingerID - The ID of the finger that registered this touch.
+				 */
+				if (typeof(touchedInstance.onTouchMoveUpdate) === 'function') {
 					// If the element is an interface we need to use screen coords
-					if (touchedDiob.baseType === 'Interface') {
-						spriteRelativeX = Utils.clamp(touchX - touchedDiob.xPos, 0, touchedDiob.width);
-						spriteRelativeY = Utils.clamp(touchY - touchedDiob.yPos, 0, touchedDiob.height);
+					if (touchedInstance.baseType === 'Interface') {
+						spriteRelativeX = Utils.clamp(touchX - touchedInstance.x, 0, touchedInstance.width);
+						spriteRelativeY = Utils.clamp(touchY - touchedInstance.y, 0, touchedInstance.height);
 					// Otherwise it is a map element and we need to use map coordinates
 					} else {
 						VYLO.Client.getPosFromScreen(touchX, touchY, this.mapPositionObject);
-						spriteRelativeX = Utils.clamp(this.mapPositionObject.x - touchedDiob.xPos, 0, touchedDiob.width);
-						spriteRelativeY = Utils.clamp(this.mapPositionObject.y - touchedDiob.yPos, 0, touchedDiob.height);
+						spriteRelativeX = Utils.clamp(this.mapPositionObject.x - touchedInstance.x, 0, touchedInstance.width);
+						spriteRelativeY = Utils.clamp(this.mapPositionObject.y - touchedInstance.y, 0, touchedInstance.height);
 					}
-					if (touchedDiob.touchOpacity === MobileHandlerSingleton.MULTI_TOUCH) {
-						touchedDiob.onTapMove(VYLO.Client, spriteRelativeX, spriteRelativeY, fingerID);
-					} else {
-						if (touchedDiob.trackedTouches) {
-							if (touchedDiob.trackedTouches.length) {
-								if (touchedDiob.trackedTouches.includes(fingerID)) {
-									touchedDiob.onTapMove(VYLO.Client, spriteRelativeX, spriteRelativeY, fingerID);
-								}
-							}
-						}
+					if (touchedInstance.touchOpacity === MobileHandlerSingleton.MULTI_TOUCH) {
+						touchedInstance.onTouchMoveUpdate(VYLO.Client, spriteRelativeX, spriteRelativeY, fingerID);
+					} else if (touchedInstanceTracker.trackedTouches.includes(fingerID)) {
+						touchedInstance.onTouchMoveUpdate(VYLO.Client, spriteRelativeX, spriteRelativeY, fingerID);
 					}
 				}
 			}
 			
-			for (const diob of this.touchedDiobs) {
-				if (diob.trackedTouches.includes(fingerID)) {
-					if (diob !== touchedDiob) {
-						if (!diob._slidOff) {
-							if (diob.onTapSlideOff && typeof(diob.onTapSlideOff) === 'function') {
-								diob._slidOff = true;
-								if (diob.baseType === 'Interface') {
-									spriteRelativeX = Utils.clamp(touchX - diob.xPos, 0, diob.width);
-									spriteRelativeY = Utils.clamp(touchY - diob.yPos, 0, diob.height);
+			for (const instance of this.touchedInstances) {
+				// If we are not tracking this instance then we track it
+				if (!this.isTracking(instance)) {
+					this.track(instance);
+				}
+				// Get a reference to the tracker object associated with this instance that was touched
+				const touchedInstanceTracker = this.getTrackerObject(instance);
+				if (touchedInstanceTracker.trackedTouches.includes(fingerID)) {
+					if (instance !== touchedInstance) {
+						if (!touchedInstanceTracker.slidOff) {
+							/**
+							 * touchedInstance event for onTouchSlideEnd.
+							 * 
+							 * touchedInstance.onTouchSlideEnd is an event function that fires when a finger slides off of this instance but not the screen. Useful for things like holding down a button and capturing the event when the finger leaves the button but not the screen
+							 * @param {Object} pClient - The client of the game.
+							 * @param {number} pX - The x position on the screen that was touched.
+							 * @param {number} pY - The y position on the screen that was touched.
+							 * @param {number} pFingerID - The ID of the finger that registered this touch.
+							 */
+							if (typeof(instance.onTouchSlideEnd) === 'function') {
+								touchedInstanceTracker.slidOff = true;
+								if (instance.baseType === 'Interface') {
+									spriteRelativeX = Utils.clamp(touchX - instance.x, 0, instance.width);
+									spriteRelativeY = Utils.clamp(touchY - instance.y, 0, instance.height);
 								} else {
 									VYLO.Client.getPosFromScreen(touchX, touchY, this.mapPositionObject);
-									spriteRelativeX = Utils.clamp(this.mapPositionObject.x - diob.xPos, 0, diob.width);
-									spriteRelativeY = Utils.clamp(this.mapPositionObject.y - diob.yPos, 0, diob.height);
+									spriteRelativeX = Utils.clamp(this.mapPositionObject.x - instance.x, 0, instance.width);
+									spriteRelativeY = Utils.clamp(this.mapPositionObject.y - instance.y, 0, instance.height);
 								}
-								diob.onTapSlideOff(VYLO.Client, spriteRelativeX, spriteRelativeY, fingerID);
+								instance.onTouchSlideEnd(VYLO.Client, spriteRelativeX, spriteRelativeY, fingerID);
 							}
 						}
 					}
-					if (diob.isMobileHandlerController) {
-						const joyring = diob;
+					if (instance.isMobileHandlerController) {
+						const joyring = instance;
 						joyring.controller.update(x, y);
 					}
 				}

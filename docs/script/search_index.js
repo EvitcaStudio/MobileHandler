@@ -342,6 +342,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/controller.mjs~controller#gettype",
+    "class/src/controller.mjs~Controller.html#instance-method-getType",
+    "src/controller.mjs~Controller#getType",
+    "method"
+  ],
+  [
     "src/controller.mjs~controller#handletransition",
     "class/src/controller.mjs~Controller.html#instance-method-handleTransition",
     "src/controller.mjs~Controller#handleTransition",
@@ -390,12 +396,6 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
-    "src/controller.mjs~controller#ontapstart",
-    "class/src/controller.mjs~Controller.html#instance-member-onTapStart",
-    "src/controller.mjs~Controller#onTapStart",
-    "member"
-  ],
-  [
     "src/controller.mjs~controller#options",
     "class/src/controller.mjs~Controller.html#instance-member-options",
     "src/controller.mjs~Controller#options",
@@ -432,18 +432,6 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
-    "src/controller.mjs~controller#type",
-    "class/src/controller.mjs~Controller.html#instance-get-type",
-    "src/controller.mjs~Controller#type",
-    "member"
-  ],
-  [
-    "src/controller.mjs~controller#type",
-    "class/src/controller.mjs~Controller.html#instance-set-type",
-    "src/controller.mjs~Controller#type",
-    "member"
-  ],
-  [
     "src/controller.mjs~controller#unlock",
     "class/src/controller.mjs~Controller.html#instance-method-unlock",
     "src/controller.mjs~Controller#unlock",
@@ -456,9 +444,21 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/controller.mjs~controller#version",
+    "class/src/controller.mjs~Controller.html#instance-member-version",
+    "src/controller.mjs~Controller#version",
+    "member"
+  ],
+  [
     "src/controller.mjs~controller#zone",
     "class/src/controller.mjs~Controller.html#instance-member-zone",
     "src/controller.mjs~Controller#zone",
+    "member"
+  ],
+  [
+    "src/controller.mjs~controller.max_layer",
+    "class/src/controller.mjs~Controller.html#static-member-MAX_LAYER",
+    "src/controller.mjs~Controller.MAX_LAYER",
     "member"
   ],
   [
@@ -534,6 +534,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/mobile-handler.mjs~mobilehandlersingleton#gettrackerobject",
+    "class/src/mobile-handler.mjs~MobileHandlerSingleton.html#instance-method-getTrackerObject",
+    "src/mobile-handler.mjs~MobileHandlerSingleton#getTrackerObject",
+    "method"
+  ],
+  [
     "src/mobile-handler.mjs~mobilehandlersingleton#handlecancel",
     "class/src/mobile-handler.mjs~MobileHandlerSingleton.html#instance-method-handleCancel",
     "src/mobile-handler.mjs~MobileHandlerSingleton#handleCancel",
@@ -574,6 +580,12 @@ window.esdocSearchIndex = [
     "class/src/mobile-handler.mjs~MobileHandlerSingleton.html#instance-method-handleZoneTouch",
     "src/mobile-handler.mjs~MobileHandlerSingleton#handleZoneTouch",
     "method"
+  ],
+  [
+    "src/mobile-handler.mjs~mobilehandlersingleton#instanceweakmap",
+    "class/src/mobile-handler.mjs~MobileHandlerSingleton.html#instance-member-instanceWeakMap",
+    "src/mobile-handler.mjs~MobileHandlerSingleton#instanceWeakMap",
+    "member"
   ],
   [
     "src/mobile-handler.mjs~mobilehandlersingleton#isandroid",
@@ -624,6 +636,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/mobile-handler.mjs~mobilehandlersingleton#istracking",
+    "class/src/mobile-handler.mjs~MobileHandlerSingleton.html#instance-method-isTracking",
+    "src/mobile-handler.mjs~MobileHandlerSingleton#isTracking",
+    "method"
+  ],
+  [
     "src/mobile-handler.mjs~mobilehandlersingleton#logger",
     "class/src/mobile-handler.mjs~MobileHandlerSingleton.html#instance-member-logger",
     "src/mobile-handler.mjs~MobileHandlerSingleton#logger",
@@ -672,9 +690,21 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
-    "src/mobile-handler.mjs~mobilehandlersingleton#toucheddiobs",
-    "class/src/mobile-handler.mjs~MobileHandlerSingleton.html#instance-member-touchedDiobs",
-    "src/mobile-handler.mjs~MobileHandlerSingleton#touchedDiobs",
+    "src/mobile-handler.mjs~mobilehandlersingleton#touchedinstances",
+    "class/src/mobile-handler.mjs~MobileHandlerSingleton.html#instance-member-touchedInstances",
+    "src/mobile-handler.mjs~MobileHandlerSingleton#touchedInstances",
+    "member"
+  ],
+  [
+    "src/mobile-handler.mjs~mobilehandlersingleton#track",
+    "class/src/mobile-handler.mjs~MobileHandlerSingleton.html#instance-method-track",
+    "src/mobile-handler.mjs~MobileHandlerSingleton#track",
+    "method"
+  ],
+  [
+    "src/mobile-handler.mjs~mobilehandlersingleton#version",
+    "class/src/mobile-handler.mjs~MobileHandlerSingleton.html#instance-member-version",
+    "src/mobile-handler.mjs~MobileHandlerSingleton#version",
     "member"
   ],
   [
