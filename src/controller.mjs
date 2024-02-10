@@ -163,8 +163,12 @@ export class Controller {
 		this.lockedDimension = this.options.lockedDimension;
 		this.lock(this.lockedDimension);
         // Create the joystick and joyring elements
-		VYLO.Client.addInterfaceElement(this.joyring, 'mobile-handler-interface', this.joyring.id);
-		VYLO.Client.addInterfaceElement(this.joystick, 'mobile-handler-interface', this.joystick.id);
+		VYLO.Client.addInterfaceElement(this.joyring, MobileHandler.interfaceHandle, this.joyring.id);
+		VYLO.Client.addInterfaceElement(this.joystick, MobileHandler.interfaceHandle, this.joystick.id);
+		// Show interface
+		if (!VYLO.Client.checkInterfaceShown(MobileHandler.interfaceHandle)) {
+			VYLO.Client.showInterface(this.interfaceHandle);
+		}
         // Track this controller
 		MobileHandler.activeControllers.push(this);
 		this.show();

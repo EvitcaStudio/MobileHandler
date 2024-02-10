@@ -1,0 +1,7 @@
+/** 
+ * @file The MobileHandler module provides a user-friendly interface for game developers to integrate touch-based controls for their game characters on mobile devices. It offers features for creating a visual joystick on the screen and facilitates mobile device interaction, including accessing device information and triggering device vibrations.
+ * 
+ * @author https://github.com/doubleactii
+ * @license MobileHandler is free software, available under the terms of a MIT style License.
+ * When lowpower mode is on it makes game run slower, from 60fps to 30fps
+ */

@@ -588,6 +588,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/mobile-handler.mjs~mobilehandlersingleton#interfacehandle",
+    "class/src/mobile-handler.mjs~MobileHandlerSingleton.html#instance-member-interfaceHandle",
+    "src/mobile-handler.mjs~MobileHandlerSingleton#interfaceHandle",
+    "member"
+  ],
+  [
     "src/mobile-handler.mjs~mobilehandlersingleton#isandroid",
     "class/src/mobile-handler.mjs~MobileHandlerSingleton.html#instance-member-isAndroid",
     "src/mobile-handler.mjs~MobileHandlerSingleton#isAndroid",

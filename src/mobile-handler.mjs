@@ -99,9 +99,9 @@ class MobileHandlerSingleton {
          */
         this.logger = new Logger();
         this.logger.registerType('MobileHandler-Module', '#ff6600');
-		// Create and show the mobile handler interface that our controllers will exist in
-		VYLO.Client.createInterface('mobile-handler-interface');
-		VYLO.Client.showInterface('mobile-handler-interface');
+		// Create the mobile handler interface that our controllers will exist in
+		this.interfaceHandle = `mobile-handler-interface-${(Math.random() * Math.PI / 2)}`;
+		VYLO.Client.createInterface(this.interfaceHandle);
 
 		this.queryUserAgent();
 		this.registerEventHandlers();
