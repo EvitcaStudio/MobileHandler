@@ -426,6 +426,9 @@ class MobileHandlerSingleton {
 	 * @param {Object} pTouchedInstance - The instance that needs to be tracked.
 	 */
 	track(pTouchedInstance) {
+		if (!pTouchedInstance) {
+			return;
+		}
 		/**
 		 * Object storing information that is occuring on pTouchedInstance
 		 * @property {Array} trackedTouches - An array of finger IDs that are currently touching the instance
@@ -445,6 +448,9 @@ class MobileHandlerSingleton {
 	 * @return {boolean} Whether pTouchedInstance is being tracked.
 	 */
 	isTracking(pTouchedInstance) {
+		if (!pTouchedInstance) {
+			return;
+		}
 		const isTracked = (this.instanceWeakMap.get(pTouchedInstance) && this.touchedInstances.includes(pTouchedInstance));
 		return isTracked;
 	}
