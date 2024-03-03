@@ -451,7 +451,7 @@ class MobileHandlerSingleton {
 		 * @private
 		 * @type {boolean}
 		 */
-		this.isTouchEnabled = &apos;ontouchstart&apos; in document.documentElement;
+		this.isTouchEnabled = &apos;ontouchstart&apos; in window || (window.DocumentTouch &amp;&amp; document instanceof window.DocumentTouch) || navigator.maxTouchPoints &gt; 0 || window.navigator.msMaxTouchPoints &gt; 0;
 		/**
 		 * Whether this device is mobile or not. Can be simulated.
 		 * @private
