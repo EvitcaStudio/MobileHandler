@@ -6,15 +6,15 @@ window.esdocSearchIndex = [
     "class"
   ],
   [
-    "mobile-handler/src/mobile-handler.mjs~mobilehandler",
+    "mobile-handler~mobilehandler",
     "variable/index.html#static-variable-MobileHandler",
-    "<span>MobileHandler</span> <span class=\"search-result-import-path\">mobile-handler/src/mobile-handler.mjs</span>",
+    "<span>MobileHandler</span> <span class=\"search-result-import-path\">mobile-handler</span>",
     "variable"
   ],
   [
-    "mobile-handler/src/mobile-handler.mjs~mobilehandlersingleton",
+    "mobile-handler~mobilehandlersingleton",
     "class/src/mobile-handler.mjs~MobileHandlerSingleton.html",
-    "<span>MobileHandlerSingleton</span> <span class=\"search-result-import-path\">mobile-handler/src/mobile-handler.mjs</span>",
+    "<span>MobileHandlerSingleton</span> <span class=\"search-result-import-path\">mobile-handler</span>",
     "class"
   ],
   [

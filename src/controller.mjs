@@ -109,7 +109,9 @@ export class Controller {
 	 * @type {Function}
 	 */
 	onMove = null;
-
+	/**
+	 * @private
+	 */
 	constructor(pOptions) {
 		this.build(pOptions);
 	}

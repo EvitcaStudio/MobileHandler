@@ -131,6 +131,9 @@ class MobileHandlerSingleton {
 	 * The version of the module.
 	 */
 	version = &quot;VERSION_REPLACE_ME&quot;;
+	/**
+	 * @private
+	 */
 	constructor() {
         /** The logger module this module uses to log errors / logs
          * @private
@@ -138,7 +141,10 @@ class MobileHandlerSingleton {
          */
         this.logger = new Logger();
         this.logger.registerType(&apos;MobileHandler-Module&apos;, &apos;#ff6600&apos;);
-		// Create the mobile handler interface that our controllers will exist in
+		/**
+		 * The mobile handler interface that our controllers will exist in
+		 * @private
+		 */
 		this.interfaceHandle = `mobile-handler-interface-${(Math.random() * Math.PI / 2)}`;
 		VYLO.Client.createInterface(this.interfaceHandle);
 

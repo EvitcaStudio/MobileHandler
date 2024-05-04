@@ -36,7 +36,16 @@
 </div>
 </nav>
 
-<div class="content" data-ice="content"><div data-ice="index" class="github-markdown"><h1 id="mobilehandler">MobileHandler</h1><p>The MobileHandler module provides a user-friendly interface for game developers to integrate touch-based controls for their game characters on mobile devices. It offers features for creating a visual joystick on the screen and facilitates mobile device interaction, including accessing device information and triggering device vibrations.</p>
+<div class="content" data-ice="content"><div data-ice="index" class="github-markdown"><h1 id="mobilehandler-module">MobileHandler Module</h1><p>The MobileHandler module provides a user-friendly interface for game developers to integrate touch-based controls for their game characters on mobile devices. It offers features for creating a visual joystick on the screen and facilitates mobile device interaction, including accessing device information and triggering device vibrations.</p>
+<h2 id="installation">Installation</h2><h3 id="es-module">ES Module</h3><pre><code class="lang-js"><code class="source-code prettyprint">import { MobileHandler } from &apos;./mobile-handler.mjs&apos;;</code>
+</code></pre>
+<h3 id="iife--immediately-invoked-function-expression-">IIFE (Immediately Invoked Function Expression)</h3><pre><code class="lang-js"><code class="source-code prettyprint">&lt;script src=&quot;mobile-handler.js&quot;&gt;&lt;/script&gt;;
+// ...
+window.MobileHandlerBundle.MobileHandler;</code>
+</code></pre>
+<h3 id="commonjs--cjs--module">CommonJS (CJS) Module</h3><pre><code class="lang-js"><code class="source-code prettyprint">const { MobileHandler } = require(&apos;./mobile-handler.cjs.js&apos;);</code>
+</code></pre>
+<h3 id="global-dependency">Global Dependency</h3><p>MobileHandler relies on the <code>VYLO</code> variable being globally accessible.</p>
 </div>
 </div>
 
