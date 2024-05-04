@@ -18,12 +18,6 @@ import { MobileHandler } from './mobile-handler.mjs';
 window.MobileHandlerBundle.MobileHandler;
 ```
 
-### CommonJS (CJS) Module
-
-```js
-const { MobileHandler } = require('./mobile-handler.cjs.js');
-```
-
 ### Global Dependency
 
 MobileHandler relies on the `VYLO` variable being globally accessible.
