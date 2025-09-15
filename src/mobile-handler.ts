@@ -1,5 +1,8 @@
+// @ts-ignore - vendor files don't have type declarations
 import { Utils } from './vendor/utils.min.mjs';
+// @ts-ignore - vendor files don't have type declarations
 import { Logger } from './vendor/logger.min.mjs';
+// @ts-ignore - vendor files don't have type declarations
 import { Pulse } from './vendor/pulse.min.mjs';
 import { Controller } from './controller';
 

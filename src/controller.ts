@@ -1,4 +1,6 @@
+// @ts-ignore - vendor files don't have type declarations
 import { Tween } from './vendor/tween.min.mjs';
+// @ts-ignore - vendor files don't have type declarations
 import { Utils } from './vendor/utils.min.mjs';
 import { MobileHandler, MobileHandlerSingleton } from './mobile-handler';
 

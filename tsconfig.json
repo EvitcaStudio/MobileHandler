@@ -16,9 +16,7 @@
     "removeComments": false,
     "noEmitOnError": false,
     "allowSyntheticDefaultImports": true,
-    "resolveJsonModule": true,
-    "noImplicitAny": false,
-    "allowJs": true
+    "resolveJsonModule": true
   },
   "include": [
     "src/**/*"

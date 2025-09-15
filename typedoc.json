@@ -4,7 +4,7 @@
   "name": "MobileHandler",
   "readme": "README.md",
   "theme": "default",
-  "excludePrivate": true,
+  "excludePrivate": false,
   "excludeProtected": false,
   "excludeExternals": true,
   "includeVersion": true,
